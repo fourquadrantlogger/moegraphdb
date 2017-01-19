@@ -14,3 +14,7 @@ type (
 var (
 	Vlist []*V
 )
+
+func init()  {
+	Vlist=make([]*V,3000000000)
+}
