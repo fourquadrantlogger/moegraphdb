@@ -9,13 +9,19 @@ import (
 	"github.com/timeloveboy/moegraphdb/graphdb"
 	"io/ioutil"
 	"encoding/json"
+	"os"
 )
 
 var (
-	UserArray graphdb.RelateGraph=graphdb.NewDB(5000*10000)
+	graphusercount=os.Getenv("usercount")
+	UserArray graphdb.RelateGraph
 )
 
 func main() {
+	cap,err:=strconv.Atoi(graphusercount)
+	panic(err)
+
+	UserArray=graphdb.NewDB(cap)
 	http.HandleFunc("/like", func(w http.ResponseWriter,r *http.Request){
 		m,_:=url.ParseQuery(r.URL.RawQuery)
 		_,have:=m["vid"]

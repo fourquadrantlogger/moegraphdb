@@ -13,7 +13,9 @@
 ```
 
 ## restful接口
-
+```
+http://localhost:8010
+```
 ### like
 
 GET /like?vid=1
