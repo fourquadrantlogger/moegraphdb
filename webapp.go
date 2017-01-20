@@ -32,7 +32,7 @@ func main() {
 		vid,_:=strconv.Atoi(m["vid"][0])
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(fmt.Sprint(UserArray[vid].Getlikes())))
+			w.Write([]byte(fmt.Sprint(UserArray.Users[vid].Getlikes())))
 		case http.MethodPost:
 			_,have:=m["beliked"]
 			if(!have){
@@ -59,7 +59,7 @@ func main() {
 		vid,_:=strconv.Atoi(m["vid"][0])
 		switch r.Method {
 		case http.MethodGet:{
-			w.Write([]byte(fmt.Sprint(UserArray[vid].Getfans())))
+			w.Write([]byte(fmt.Sprint(UserArray.Users[vid].Getfans())))
 		}
 		case http.MethodPost:
 			_,have:=m["fan"]
@@ -88,21 +88,21 @@ func main() {
 		vid,_:=strconv.Atoi(m["vid"][0])
 		switch r.Method {
 		case http.MethodGet:{
-			w.Write([]byte(fmt.Sprint(UserArray[vid])))
+			w.Write([]byte(fmt.Sprint(UserArray.Users[vid])))
 		}
 		case http.MethodPost:
 			body,_:=ioutil.ReadAll(r.Body)
 			var info map[string]interface{}
 			err:=json.Unmarshal(body,&info)
 			panic(err)
-			UserArray[uint(vid)].Info=info
+			UserArray.Users[uint(vid)].Info=info
 		case http.MethodPut:
 			body,_:=ioutil.ReadAll(r.Body)
 			var info map[string]interface{}
 			err:=json.Unmarshal(body,&info)
 			panic(err)
 			for k,v:=range info{
-				UserArray[uint(vid)].Info[k]=v
+				UserArray.Users[uint(vid)].Info[k]=v
 			}
 		}
 

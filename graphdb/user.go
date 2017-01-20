@@ -17,7 +17,7 @@ type (
 	}
 )
 
-func (this User)String()string{
+func (this *User)String()string{
 	info,_:=json.Marshal(this.Info)
 	return "{ Uid:"+fmt.Sprint(this.Uid)+ ",Info:"+string(info)+",FansCount:"+fmt.Sprint(this.FansCount())+",LikesCount:"+fmt.Sprint(this.LikesCount()) +")"
 }
