@@ -6,8 +6,8 @@ func NewDB(count uint)(RelateGraph){
 	for i,_:=range UserArray{
 		UserArray[i]=new(User)
 		UserArray[i].Uid =uint(i)
-		UserArray[i].Fans=make( map[uint]*User )
-		UserArray[i].Likes=make( map[uint]*User )
+		UserArray[i].Fans=make( map[uint]*User,0)
+		UserArray[i].Likes=make( map[uint]*User,0)
 	}
 	return UserArray
 }

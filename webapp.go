@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	UserArray graphdb.RelateGraph=graphdb.NewDB(50000000)
+	UserArray graphdb.RelateGraph=graphdb.NewDB(5000*10000)
 )
 
 func main() {

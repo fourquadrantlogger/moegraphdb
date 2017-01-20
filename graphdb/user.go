@@ -1,15 +1,16 @@
 package graphdb
 
 import (
-	"sync"
+	//"sync"
 	"fmt"
+	"encoding/json"
 )
 
 type (
 	User struct{
 		Info map[string]interface{}
-		Lock_fans  sync.RWMutex
-		Lock_likes sync.RWMutex
+		//Lock_fans  sync.RWMutex
+		//Lock_likes sync.RWMutex
 		Uid        uint
 		Fans       map[uint]*User
 		Likes      map[uint]*User
@@ -17,7 +18,8 @@ type (
 )
 
 func (this User)String()string{
-	return "Uid:"+fmt.Sprint(this.Uid)+ " Info:"+fmt.Sprint(this.Info)+" FansCount:"+fmt.Sprint(this.FansCount())+" LikesCount:"+fmt.Sprint(this.LikesCount())
+	info,_:=json.Marshal(this.Info)
+	return "{ Uid:"+fmt.Sprint(this.Uid)+ ",Info:"+string(info)+",FansCount:"+fmt.Sprint(this.FansCount())+",LikesCount:"+fmt.Sprint(this.LikesCount()) +")"
 }
 
 // 粉丝数
