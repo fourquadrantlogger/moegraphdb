@@ -26,3 +26,21 @@ func (UserArray RelateGraph)Disfriend(vid,beliked uint){
 	delete(UserArray[int(vid)].Fans,beliked)
 	delete(UserArray[int(beliked)].Fans,vid)
 }
+
+// 2人的关系
+// 0:没有关系
+// 1：user1 关注了 user2
+// 2：user2 关注了 user1
+// 3：互粉的好友
+func (UserArray RelateGraph)Relate(vid1,vid2 uint)int{
+	relate:=0
+	_,has:=UserArray[vid1].Likes[uint(vid2)]
+	if(has){
+		relate+=1
+	}
+	_,has2:=UserArray[vid1].Fans[uint(vid2)]
+	if(has2){
+		relate+=2
+	}
+	return relate
+}
