@@ -11,11 +11,11 @@ import (
 
 type (
 	User struct{
-		Lock_fans sync.RWMutex
+		Lock_fans  sync.RWMutex
 		Lock_likes sync.RWMutex
-		Vid uint
-		Fans map[uint]*User
-		Likes map[uint]*User
+		Uid        uint
+		Fans       map[uint]*User
+		Likes      map[uint]*User
 	}
 )
 
@@ -27,7 +27,7 @@ func init()  {
 	UserArray =make([]*User,50000000)
 	for i,_:=range UserArray{
 		UserArray[i]=new(User)
-		UserArray[i].Vid=uint(i)
+		UserArray[i].Uid =uint(i)
 		UserArray[i].Fans=make( map[uint]*User )
 		UserArray[i].Likes=make( map[uint]*User )
 	}
