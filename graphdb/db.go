@@ -1,7 +1,7 @@
 package graphdb
 
 
-func NewDB(count uint)(RelateGraph){
+func NewDB(count int)(RelateGraph){
 	UserArray:=make([]*User,count)
 	for i,_:=range UserArray{
 		UserArray[i]=new(User)

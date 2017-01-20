@@ -19,8 +19,9 @@ var (
 
 func main() {
 	cap,err:=strconv.Atoi(graphusercount)
-	panic(err)
-
+	if(err!=nil) {
+		panic(err)
+	}
 	UserArray=graphdb.NewDB(cap)
 	http.HandleFunc("/like", func(w http.ResponseWriter,r *http.Request){
 		m,_:=url.ParseQuery(r.URL.RawQuery)
@@ -133,6 +134,8 @@ func main() {
 	})
 
 	fmt.Println("start http server")
-	err :=http.ListenAndServe(":8010",nil)
-	panic(err)
+	err=http.ListenAndServe(":8010",nil)
+	if(err!=nil) {
+		panic(err)
+	}
 }
