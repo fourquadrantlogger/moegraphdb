@@ -1,7 +1,6 @@
 package graphdb
 
 
-type RelateGraph []*User
 // 关注他
 func (UserArray RelateGraph)Like(vid,beliked uint){
 	UserArray[int(vid)].Likes[beliked]=UserArray[beliked]
@@ -32,7 +31,7 @@ func (UserArray RelateGraph)Disfriend(vid,beliked uint){
 // 1：user1 关注了 user2
 // 2：user2 关注了 user1
 // 3：互粉的好友
-func (UserArray RelateGraph)Relate(vid1,vid2 uint)int{
+func (UserArray RelateGraph)GetRelate(vid1,vid2 uint)int{
 	relate:=0
 	_,has:=UserArray[vid1].Likes[uint(vid2)]
 	if(has){
@@ -43,4 +42,12 @@ func (UserArray RelateGraph)Relate(vid1,vid2 uint)int{
 		relate+=2
 	}
 	return relate
+}
+func (UserArray *RelateGraph)SetRelate(vid1,vid2 uint,relate int){
+	switch relate {
+	case 0:UserArray.Disfriend(vid1,vid2)
+	case 1:UserArray.Like(vid1,vid2)
+	case 2:UserArray.Like(vid2,vid1)
+	case 3:UserArray.Makefriend(vid1,vid2)
+	}
 }

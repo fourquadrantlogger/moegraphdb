@@ -1,9 +1,13 @@
 package graphdb
 
-import "sync"
+import (
+	"sync"
+	"fmt"
+)
 
 type (
 	User struct{
+		Info map[string]interface{}
 		Lock_fans  sync.RWMutex
 		Lock_likes sync.RWMutex
 		Uid        uint
@@ -11,6 +15,11 @@ type (
 		Likes      map[uint]*User
 	}
 )
+
+func (this User)String()string{
+	return "Uid:"+fmt.Sprint(this.Uid)+ " Info:"+fmt.Sprint(this.Info)+" FansCount:"+fmt.Sprint(this.FansCount())+" LikesCount:"+fmt.Sprint(this.LikesCount())
+}
+
 // 粉丝数
 func (this *User)FansCount()(int){
 	if(this!=nil&&this.Fans!=nil){
@@ -24,4 +33,14 @@ func (this *User)LikesCount()(int){
 		return len(this.Likes)
 	}
 	return 0
+}
+
+// 用户更多信息
+func (this *User)SetInfo(info map[string]interface{}){
+	this.Info=info
+}
+
+func (this *User)GetInfo()(info map[string]interface{}){
+	info=this.Info
+	return
 }
