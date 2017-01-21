@@ -133,6 +133,51 @@ func main() {
 
 	})
 
+	http.HandleFunc("/common/2/likes", func(w http.ResponseWriter,r *http.Request){
+		bs,_:=ioutil.ReadAll(r.Body)
+		user_user:=[]uint{}
+		json.Unmarshal(bs,&user_user)
+		if(len(user_user)!=2){
+			return
+		}
+		switch r.Method {
+		case http.MethodOptions:
+			w.Write([]byte(fmt.Sprint(UserArray.GetCommonLikes(user_user[0],user_user[1]))))
+		}
+	})
+	http.HandleFunc("/common/2/fans", func(w http.ResponseWriter,r *http.Request){
+		bs,_:=ioutil.ReadAll(r.Body)
+		user_user:=[]uint{}
+		json.Unmarshal(bs,&user_user)
+		if(len(user_user)!=2){
+			return
+		}
+		switch r.Method {
+		case http.MethodOptions:
+			w.Write([]byte(fmt.Sprint(UserArray.GetCommonFans(user_user[0],user_user[1]))))
+		}
+	})
+
+	http.HandleFunc("/common/n/likes", func(w http.ResponseWriter,r *http.Request){
+		bs,_:=ioutil.ReadAll(r.Body)
+		users:=[]uint{}
+		json.Unmarshal(bs,&users)
+		switch r.Method {
+		case http.MethodOptions:
+			bs,_:=json.Marshal(UserArray.GetThemCommonLikes(users...))
+			w.Write(bs)
+		}
+	})
+	http.HandleFunc("/common/n/fans", func(w http.ResponseWriter,r *http.Request){
+		bs,_:=ioutil.ReadAll(r.Body)
+		users:=[]uint{}
+		json.Unmarshal(bs,&users)
+		switch r.Method {
+		case http.MethodOptions:
+			bs,_:=json.Marshal(UserArray.GetThemCommonFans(users...))
+			w.Write(bs)
+		}
+	})
 	fmt.Println("start http server")
 	err=http.ListenAndServe(":8010",nil)
 	if(err!=nil) {
