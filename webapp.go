@@ -10,6 +10,7 @@ import (
 	"github.com/timeloveboy/moegraphdb/graphdb"
 	"io/ioutil"
 	"os"
+	"reflect"
 )
 
 var (
@@ -232,6 +233,19 @@ func main() {
 			w.Write(bs)
 		}
 	})
+
+	http.HandleFunc("/user/count", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+		case http.MethodGet:
+			bs, _ := json.Marshal(UserArray.GetUserRelateCount())
+			w.Write(bs)
+		}
+	})
+
+	//fmt.Println("UserArray",reflect.TypeOf(graphdb.User{Uid:1000,
+	//	Likes:make(map[uint]*graphdb.User,0),
+	//	Fans:make(map[uint]*graphdb.User,0)}).Size())
 	fmt.Println("start http server")
 	err = http.ListenAndServe(":8010", nil)
 	if err != nil {

@@ -17,6 +17,13 @@ func (this RelateGraph) GetUserRelateCount() int {
 	}
 	return relatecount
 }
+func (this RelateGraph) GetUserUserCount() int {
+	relatecount := 0
+	for range this.Users {
+		relatecount++
+	}
+	return relatecount
+}
 func (this RelateGraph) SearchUserWhereInfo(key string, value interface{}) {
 
 }
