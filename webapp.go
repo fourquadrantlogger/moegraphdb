@@ -60,7 +60,7 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			{
-				w.Write([]byte(fmt.Sprint(UserArray.Users[uint(vid)].Getfans())))
+				w.Write([]byte(fmt.Sprint(UserArray.GetUser(uint(vid)).Getfans())))
 			}
 		case http.MethodPost:
 			_, have := m["fan"]
@@ -90,21 +90,21 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			{
-				w.Write([]byte(fmt.Sprint(UserArray.Users[uint(vid)])))
+				w.Write([]byte(fmt.Sprint(UserArray.GetUser(uint(vid)))))
 			}
 		case http.MethodPost:
 			body, _ := ioutil.ReadAll(r.Body)
 			var info map[string]interface{}
 			err := json.Unmarshal(body, &info)
 			panic(err)
-			UserArray.Users[uint(vid)].Info = info
+			UserArray.GetUser(uint(vid)).Info = info
 		case http.MethodPut:
 			body, _ := ioutil.ReadAll(r.Body)
 			var info map[string]interface{}
 			err := json.Unmarshal(body, &info)
 			panic(err)
 			for k, v := range info {
-				UserArray.Users[uint(vid)].Info[k] = v
+				UserArray.GetUser(uint(vid)).Info[k] = v
 			}
 		}
 
@@ -188,9 +188,18 @@ func main() {
 		}
 		users := []uint{}
 		json.Unmarshal(bs, &users)
+
+		m, _ := url.ParseQuery(r.URL.RawQuery)
+		var min int
+		_, have := m["min"]
+		if have {
+			min, _ = strconv.Atoi(m["min"][0])
+		}
+
 		switch r.Method {
 		case http.MethodOptions:
-			bs, _ := json.Marshal(UserArray.GetThemCommonLikes(users...))
+
+			bs, _ := json.Marshal(graphdb.Filter_min(UserArray.GetThemCommonLikes(users...), min))
 			w.Write(bs)
 		}
 	})
@@ -201,9 +210,25 @@ func main() {
 		}
 		users := []uint{}
 		json.Unmarshal(bs, &users)
+
+		m, _ := url.ParseQuery(r.URL.RawQuery)
+		var min int
+		_, have := m["min"]
+		if have {
+			min, _ = strconv.Atoi(m["min"][0])
+		}
+
 		switch r.Method {
 		case http.MethodOptions:
-			bs, _ := json.Marshal(UserArray.GetThemCommonFans(users...))
+			bs, _ := json.Marshal(graphdb.Filter_min(UserArray.GetThemCommonFans(users...), min))
+			w.Write(bs)
+		}
+	})
+
+	http.HandleFunc("/relate/count", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			bs, _ := json.Marshal(UserArray.GetUserRelateCount())
 			w.Write(bs)
 		}
 	})

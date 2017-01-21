@@ -20,9 +20,11 @@ type (
 func (this *RelateGraph) GetUser(vid uint) *User {
 	if u, have := this.Users[vid]; have {
 		return u
+	} else {
+		this.CreateUser(vid)
+		return this.GetUser(vid)
 	}
-	this.CreateUser(vid)
-	return this.GetUser(vid)
+
 }
 func (this *RelateGraph) CreateUser(vid uint) {
 	this.Users[vid] = &User{Uid: vid,
