@@ -9,21 +9,14 @@ import (
 	"encoding/json"
 	"github.com/timeloveboy/moegraphdb/graphdb"
 	"io/ioutil"
-	"os"
-	"reflect"
 )
 
 var (
-	graphusercount = os.Getenv("usercount")
-	UserArray      graphdb.RelateGraph
+	UserArray graphdb.RelateGraph
 )
 
 func main() {
-	cap, err := strconv.Atoi(graphusercount)
-	if err != nil {
-		panic(err)
-	}
-	UserArray = graphdb.NewDB(cap)
+	UserArray = graphdb.NewDB()
 	http.HandleFunc("/like", func(w http.ResponseWriter, r *http.Request) {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		_, have := m["vid"]
@@ -247,7 +240,7 @@ func main() {
 	//	Likes:make(map[uint]*graphdb.User,0),
 	//	Fans:make(map[uint]*graphdb.User,0)}).Size())
 	fmt.Println("start http server")
-	err = http.ListenAndServe(":8010", nil)
+	err := http.ListenAndServe(":8010", nil)
 	if err != nil {
 		panic(err)
 	}
