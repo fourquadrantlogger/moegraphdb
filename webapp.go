@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"github.com/timeloveboy/moegraphdb/graphdb"
 	"io/ioutil"
+	"reflect"
 )
 
 var (
@@ -236,9 +237,9 @@ func main() {
 		}
 	})
 
-	//fmt.Println("UserArray",reflect.TypeOf(graphdb.User{Uid:1000,
-	//	Likes:make(map[uint]*graphdb.User,0),
-	//	Fans:make(map[uint]*graphdb.User,0)}).Size())
+	fmt.Println("UserArray", reflect.TypeOf(graphdb.User{Uid: 1000,
+		Likes: make(map[uint]*graphdb.User, 0),
+		Fans:  make(map[uint]*graphdb.User, 0)}).Size())
 	fmt.Println("start http server")
 	err := http.ListenAndServe(":8010", nil)
 	if err != nil {
