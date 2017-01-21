@@ -108,7 +108,7 @@ func main() {
 
 	})
 
-	http.HandleFunc("/relate", func(w http.ResponseWriter,r *http.Request){
+	http.HandleFunc("/relate/2", func(w http.ResponseWriter,r *http.Request){
 		m,_:=url.ParseQuery(r.URL.RawQuery)
 		_,have:=m["vid1"]
 		if(!have){
@@ -130,9 +130,23 @@ func main() {
 		case http.MethodDelete:
 			UserArray.Disfriend(uint(vid1),uint(vid2))
 		}
-
 	})
 
+	http.HandleFunc("/relate/n", func(w http.ResponseWriter,r *http.Request){
+		bs,_:=ioutil.ReadAll(r.Body)
+		relates:=[]struct{
+			Vid1 uint `json:"vid1"`
+			Vid2 uint `json:"vid2"`
+		        Relate int `json:"relate"`
+		}{}
+		json.Unmarshal(bs,&relates)
+		switch r.Method {
+		case http.MethodPost:
+			for _,v:=range relates{
+				UserArray.SetRelate(v.Vid1,v.Vid2,v.Relate)
+			}
+		}
+	})
 	http.HandleFunc("/common/2/likes", func(w http.ResponseWriter,r *http.Request){
 		bs,_:=ioutil.ReadAll(r.Body)
 		user_user:=[]uint{}

@@ -3,7 +3,7 @@ package graphdb
 
 type RelateGraph struct {
 	//用户
-	Users []*User
+	Users []*User `json:"users"`
 	//info 的索引
 	Indexs map[string](map[string]interface{})
 }
