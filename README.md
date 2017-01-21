@@ -68,18 +68,32 @@ DELETE /user?vid=1
 ```
 >更新用户1的一部分key/value信息
 
-### relate
-GET /fans?vid1=1&vid2=2
+### relate/2
+GET /relate/2?vid1=1&vid2=2
 
 >用户1与用户2的关系
 
-POST /like?vid=1&fan=2&relate=(0-3)
+POST /relate/2?vid=1&fan=2&relate=(0-3)
 
 >设置用户1与用户2的关系
 
-DELETE /like?vid=1&fan=2
+DELETE /relate/2?vid=1&fan=2
 
 >让用户1与用户2没有任何关系
+
+### relate/n
+
+POST /relate/n
+```
+[
+{
+	"vid1":1,
+	"vid2":2,
+	"relate":3
+}
+]
+```
+>设置用户1与用户2的关系
 
 ### common
 
