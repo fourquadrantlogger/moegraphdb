@@ -2,31 +2,31 @@ package graphdb
 
 // 关注他
 func (UserArray RelateGraph) Like(vid, beliked uint) {
-	UserArray.Users[int(vid)].Likes[beliked] = UserArray.Users[beliked]
+	UserArray.GetUser(vid).Likes[beliked] = UserArray.GetUser(beliked)
 
-	UserArray.Users[int(beliked)].Fans[vid] = UserArray.Users[vid]
+	UserArray.GetUser(beliked).Fans[vid] = UserArray.GetUser(vid)
 }
 
 // 取消关注他
 func (UserArray RelateGraph) DisLike(vid, beliked uint) {
-	delete(UserArray.Users[int(vid)].Likes, beliked)
-	delete(UserArray.Users[int(beliked)].Fans, vid)
+	delete(UserArray.GetUser(vid).Likes, beliked)
+	delete(UserArray.GetUser(beliked).Fans, vid)
 }
 
 // 互粉
 func (UserArray RelateGraph) Makefriend(vid, beliked uint) {
-	UserArray.Users[int(vid)].Likes[beliked] = UserArray.Users[beliked]
-	UserArray.Users[int(beliked)].Likes[vid] = UserArray.Users[vid]
-	UserArray.Users[int(beliked)].Fans[vid] = UserArray.Users[vid]
-	UserArray.Users[int(vid)].Fans[beliked] = UserArray.Users[beliked]
+	UserArray.GetUser(vid).Likes[beliked] = UserArray.GetUser(beliked)
+	UserArray.GetUser(beliked).Likes[vid] = UserArray.GetUser(vid)
+	UserArray.GetUser(beliked).Fans[vid] = UserArray.GetUser(vid)
+	UserArray.GetUser(vid).Fans[beliked] = UserArray.GetUser(beliked)
 }
 
 // 取消互粉
 func (UserArray RelateGraph) Disfriend(vid, beliked uint) {
-	delete(UserArray.Users[int(vid)].Likes, beliked)
-	delete(UserArray.Users[int(beliked)].Likes, vid)
-	delete(UserArray.Users[int(vid)].Fans, beliked)
-	delete(UserArray.Users[int(beliked)].Fans, vid)
+	delete(UserArray.GetUser(vid).Likes, beliked)
+	delete(UserArray.GetUser(beliked).Likes, vid)
+	delete(UserArray.GetUser(vid).Fans, beliked)
+	delete(UserArray.GetUser(beliked).Fans, vid)
 }
 
 // 2人的关系
@@ -36,11 +36,11 @@ func (UserArray RelateGraph) Disfriend(vid, beliked uint) {
 // 3：互粉的好友
 func (UserArray RelateGraph) GetRelate(vid1, vid2 uint) int {
 	relate := 0
-	_, has := UserArray.Users[vid1].Likes[uint(vid2)]
+	_, has := UserArray.GetUser(vid1).Likes[vid2]
 	if has {
 		relate += 1
 	}
-	_, has2 := UserArray.Users[vid1].Fans[uint(vid2)]
+	_, has2 := UserArray.GetUser(vid1).Fans[vid2]
 	if has2 {
 		relate += 2
 	}

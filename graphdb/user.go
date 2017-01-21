@@ -17,6 +17,20 @@ type (
 	}
 )
 
+func (this *RelateGraph) GetUser(vid uint) *User {
+	if u, have := this.Users[vid]; have {
+		return u
+	}
+	this.CreateUser(vid)
+	return this.GetUser(vid)
+}
+func (this *RelateGraph) CreateUser(vid uint) {
+	this.Users[vid] = &User{Uid: vid,
+		Fans:  make(map[uint]*User, 0),
+		Likes: make(map[uint]*User, 0),
+	}
+}
+
 func (this *User) String() string {
 	info, _ := json.Marshal(this.Info)
 	return "{ Uid:" + fmt.Sprint(this.Uid) + ",Info:" + string(info) + ",FansCount:" + fmt.Sprint(this.FansCount()) + ",LikesCount:" + fmt.Sprint(this.LikesCount()) + ")"

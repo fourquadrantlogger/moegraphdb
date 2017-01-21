@@ -32,7 +32,7 @@ func main() {
 		vid, _ := strconv.Atoi(m["vid"][0])
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(fmt.Sprint(UserArray.Users[vid].Getlikes())))
+			w.Write([]byte(fmt.Sprint(UserArray.Users[uint(vid)].Getlikes())))
 		case http.MethodPost:
 			_, have := m["beliked"]
 			if !have {
@@ -60,7 +60,7 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			{
-				w.Write([]byte(fmt.Sprint(UserArray.Users[vid].Getfans())))
+				w.Write([]byte(fmt.Sprint(UserArray.Users[uint(vid)].Getfans())))
 			}
 		case http.MethodPost:
 			_, have := m["fan"]
@@ -90,7 +90,7 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			{
-				w.Write([]byte(fmt.Sprint(UserArray.Users[vid])))
+				w.Write([]byte(fmt.Sprint(UserArray.Users[uint(vid)])))
 			}
 		case http.MethodPost:
 			body, _ := ioutil.ReadAll(r.Body)
