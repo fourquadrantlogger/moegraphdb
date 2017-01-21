@@ -92,20 +92,20 @@ func main() {
 			{
 				w.Write([]byte(fmt.Sprint(UserArray.GetUser(uint(vid)))))
 			}
-		case http.MethodPost:
-			body, _ := ioutil.ReadAll(r.Body)
-			var info map[string]interface{}
-			err := json.Unmarshal(body, &info)
-			panic(err)
-			UserArray.GetUser(uint(vid)).Info = info
-		case http.MethodPut:
-			body, _ := ioutil.ReadAll(r.Body)
-			var info map[string]interface{}
-			err := json.Unmarshal(body, &info)
-			panic(err)
-			for k, v := range info {
-				UserArray.GetUser(uint(vid)).Info[k] = v
-			}
+			//case http.MethodPost:
+			//	body, _ := ioutil.ReadAll(r.Body)
+			//	var info map[string]interface{}
+			//	err := json.Unmarshal(body, &info)
+			//	panic(err)
+			//	UserArray.GetUser(uint(vid)).Info = info
+			//case http.MethodPut:
+			//	body, _ := ioutil.ReadAll(r.Body)
+			//	var info map[string]interface{}
+			//	err := json.Unmarshal(body, &info)
+			//	panic(err)
+			//	for k, v := range info {
+			//		UserArray.GetUser(uint(vid)).Info[k] = v
+			//	}
 		}
 
 	})

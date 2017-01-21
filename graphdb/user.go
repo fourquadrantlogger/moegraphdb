@@ -1,14 +1,12 @@
 package graphdb
 
 import (
-	//"sync"
-	"encoding/json"
 	"fmt"
 )
 
 type (
 	User struct {
-		Info map[string]interface{}
+		//Info map[string]interface{}
 		//Lock_fans  sync.RWMutex
 		//Lock_likes sync.RWMutex
 		Uid   uint
@@ -34,7 +32,8 @@ func (this *RelateGraph) CreateUser(vid uint) {
 }
 
 func (this *User) String() string {
-	info, _ := json.Marshal(this.Info)
+	//info, _ := json.Marshal(this.Info)
+	info := ""
 	return "{ Uid:" + fmt.Sprint(this.Uid) + ",Info:" + string(info) + ",FansCount:" + fmt.Sprint(this.FansCount()) + ",LikesCount:" + fmt.Sprint(this.LikesCount()) + ")"
 }
 
@@ -55,11 +54,11 @@ func (this *User) LikesCount() int {
 }
 
 // 用户更多信息
-func (this *User) SetInfo(info map[string]interface{}) {
-	this.Info = info
-}
-
-func (this *User) GetInfo() (info map[string]interface{}) {
-	info = this.Info
-	return
-}
+//func (this *User) SetInfo(info map[string]interface{}) {
+//	this.Info = info
+//}
+//
+//func (this *User) GetInfo() (info map[string]interface{}) {
+//	info = this.Info
+//	return
+//}
