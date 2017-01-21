@@ -133,7 +133,10 @@ func main() {
 	})
 
 	http.HandleFunc("/relate/n", func(w http.ResponseWriter,r *http.Request){
-		bs,_:=ioutil.ReadAll(r.Body)
+		bs,err:=ioutil.ReadAll(r.Body)
+		if(err!=nil){
+			w.Write([]byte(err.Error()))
+		}
 		relates:=[]struct{
 			Vid1 uint `json:"vid1"`
 			Vid2 uint `json:"vid2"`
@@ -160,7 +163,10 @@ func main() {
 		}
 	})
 	http.HandleFunc("/common/2/fans", func(w http.ResponseWriter,r *http.Request){
-		bs,_:=ioutil.ReadAll(r.Body)
+		bs,err:=ioutil.ReadAll(r.Body)
+		if(err!=nil){
+			w.Write([]byte(err.Error()))
+		}
 		user_user:=[]uint{}
 		json.Unmarshal(bs,&user_user)
 		if(len(user_user)!=2){
@@ -173,7 +179,10 @@ func main() {
 	})
 
 	http.HandleFunc("/common/n/likes", func(w http.ResponseWriter,r *http.Request){
-		bs,_:=ioutil.ReadAll(r.Body)
+		bs,err:=ioutil.ReadAll(r.Body)
+		if(err!=nil){
+			w.Write([]byte(err.Error()))
+		}
 		users:=[]uint{}
 		json.Unmarshal(bs,&users)
 		switch r.Method {
@@ -183,7 +192,10 @@ func main() {
 		}
 	})
 	http.HandleFunc("/common/n/fans", func(w http.ResponseWriter,r *http.Request){
-		bs,_:=ioutil.ReadAll(r.Body)
+		bs,err:=ioutil.ReadAll(r.Body)
+		if(err!=nil){
+			w.Write([]byte(err.Error()))
+		}
 		users:=[]uint{}
 		json.Unmarshal(bs,&users)
 		switch r.Method {
