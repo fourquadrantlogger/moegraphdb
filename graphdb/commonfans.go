@@ -3,10 +3,10 @@ package graphdb
 // 找到2个用户，共同的粉丝
 func (this RelateGraph) GetCommonFans(vid1, vid2 uint) []uint {
 	commonfans := make([]uint, 0)
-	for _, f := range this.GetUser(vid1).Fans {
-		_, hav := this.GetUser(vid1).Fans[f.Uid]
+	for f, _ := range this.GetUser(vid1).Fans {
+		_, hav := this.GetUser(vid2).Fans[f]
 		if hav {
-			commonfans = append(commonfans, f.Uid)
+			commonfans = append(commonfans, f)
 		}
 	}
 	return commonfans

@@ -10,24 +10,30 @@ type (
 		//Lock_fans  sync.RWMutex
 		//Lock_likes sync.RWMutex
 		Uid   uint
-		Fans  map[uint]*User
-		Likes map[uint]*User
+		Fans  map[uint]byte
+		Likes map[uint]byte
 	}
 )
 
 func (this *RelateGraph) GetUser(vid uint) *User {
-	if u, have := this.Users[vid]; have {
-		return u
+	if _, have := this.Users[vid]; have {
+		return (this.Users[vid])
+	}
+	panic(nil)
+}
+func (this *RelateGraph) GetOrCreateUser(vid uint) *User {
+	if _, have := this.Users[vid]; have {
+		return (this.Users[vid])
 	} else {
 		this.CreateUser(vid)
 		return this.GetUser(vid)
 	}
-
 }
+
 func (this *RelateGraph) CreateUser(vid uint) {
 	this.Users[vid] = &User{Uid: vid,
-		Fans:  make(map[uint]*User, 0),
-		Likes: make(map[uint]*User, 0),
+		Fans:  make(map[uint]byte, 0),
+		Likes: make(map[uint]byte, 0),
 	}
 }
 

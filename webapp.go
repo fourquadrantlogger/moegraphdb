@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"github.com/timeloveboy/moegraphdb/graphdb"
 	"io/ioutil"
-	"reflect"
 )
 
 var (
@@ -87,20 +86,6 @@ func main() {
 			{
 				w.Write([]byte(fmt.Sprint(UserArray.GetUser(uint(vid)))))
 			}
-			//case http.MethodPost:
-			//	body, _ := ioutil.ReadAll(r.Body)
-			//	var info map[string]interface{}
-			//	err := json.Unmarshal(body, &info)
-			//	panic(err)
-			//	UserArray.GetUser(uint(vid)).Info = info
-			//case http.MethodPut:
-			//	body, _ := ioutil.ReadAll(r.Body)
-			//	var info map[string]interface{}
-			//	err := json.Unmarshal(body, &info)
-			//	panic(err)
-			//	for k, v := range info {
-			//		UserArray.GetUser(uint(vid)).Info[k] = v
-			//	}
 		}
 
 	})
@@ -237,9 +222,6 @@ func main() {
 		}
 	})
 
-	fmt.Println("UserArray", reflect.TypeOf(graphdb.User{Uid: 1000,
-		Likes: make(map[uint]*graphdb.User, 0),
-		Fans:  make(map[uint]*graphdb.User, 0)}).Size())
 	fmt.Println("start http server")
 	err := http.ListenAndServe(":8010", nil)
 	if err != nil {

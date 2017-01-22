@@ -2,31 +2,31 @@ package graphdb
 
 // 关注他
 func (UserArray RelateGraph) Like(vid, beliked uint) {
-	UserArray.GetUser(vid).Likes[beliked] = UserArray.GetUser(beliked)
+	UserArray.GetOrCreateUser(vid).Likes[beliked] = 0
 
-	UserArray.GetUser(beliked).Fans[vid] = UserArray.GetUser(vid)
+	UserArray.GetOrCreateUser(beliked).Fans[vid] = 0
 }
 
 // 取消关注他
 func (UserArray RelateGraph) DisLike(vid, beliked uint) {
-	delete(UserArray.GetUser(vid).Likes, beliked)
-	delete(UserArray.GetUser(beliked).Fans, vid)
+	delete(UserArray.GetOrCreateUser(vid).Likes, beliked)
+	delete(UserArray.GetOrCreateUser(beliked).Fans, vid)
 }
 
 // 互粉
 func (UserArray RelateGraph) Makefriend(vid, beliked uint) {
-	UserArray.GetUser(vid).Likes[beliked] = UserArray.GetUser(beliked)
-	UserArray.GetUser(beliked).Likes[vid] = UserArray.GetUser(vid)
-	UserArray.GetUser(beliked).Fans[vid] = UserArray.GetUser(vid)
-	UserArray.GetUser(vid).Fans[beliked] = UserArray.GetUser(beliked)
+	UserArray.GetOrCreateUser(vid).Likes[beliked] = 0
+	UserArray.GetOrCreateUser(beliked).Likes[vid] = 0
+	UserArray.GetOrCreateUser(beliked).Fans[vid] = 0
+	UserArray.GetOrCreateUser(vid).Fans[beliked] = 0
 }
 
 // 取消互粉
 func (UserArray RelateGraph) Disfriend(vid, beliked uint) {
-	delete(UserArray.GetUser(vid).Likes, beliked)
-	delete(UserArray.GetUser(beliked).Likes, vid)
-	delete(UserArray.GetUser(vid).Fans, beliked)
-	delete(UserArray.GetUser(beliked).Fans, vid)
+	delete(UserArray.GetOrCreateUser(vid).Likes, beliked)
+	delete(UserArray.GetOrCreateUser(beliked).Likes, vid)
+	delete(UserArray.GetOrCreateUser(vid).Fans, beliked)
+	delete(UserArray.GetOrCreateUser(beliked).Fans, vid)
 }
 
 // 2人的关系

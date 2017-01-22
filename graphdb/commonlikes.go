@@ -3,10 +3,10 @@ package graphdb
 // 找到2个用户，共同关注的人
 func (this RelateGraph) GetCommonLikes(vid1, vid2 uint) []uint {
 	commonlikes := make([]uint, 0)
-	for _, f := range this.GetUser(vid1).Likes {
-		_, hav := this.GetUser(vid1).Likes[f.Uid]
+	for f, _ := range this.GetUser(vid1).Likes {
+		_, hav := this.GetUser(vid2).Likes[f]
 		if hav {
-			commonlikes = append(commonlikes, f.Uid)
+			commonlikes = append(commonlikes, f)
 		}
 	}
 	return commonlikes
