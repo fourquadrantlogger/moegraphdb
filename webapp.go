@@ -13,11 +13,18 @@ import (
 
 var (
 	UserArray graphdb.RelateGraph
+	OpenLog   bool = true
 )
 
+func moeprint(r *http.Request) {
+	if OpenLog {
+		fmt.Println(r.Method, "\t", r.URL)
+	}
+}
 func main() {
 	UserArray = graphdb.NewDB()
 	http.HandleFunc("/like", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		_, have := m["vid"]
 		if !have {
@@ -45,6 +52,7 @@ func main() {
 	})
 
 	http.HandleFunc("/like/n", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		bs, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -62,6 +70,7 @@ func main() {
 		}
 	})
 	http.HandleFunc("/fans", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		_, have := m["vid"]
 		if !have {
@@ -92,6 +101,7 @@ func main() {
 	})
 
 	http.HandleFunc("/fans/n", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		bs, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -106,9 +116,11 @@ func main() {
 			for _, v := range relates {
 				UserArray.Like(v.Vid2, v.Vid1)
 			}
+			w.Write([]byte("ok"))
 		}
 	})
 	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		_, have := m["vid"]
 		if !have {
@@ -125,6 +137,7 @@ func main() {
 	})
 
 	http.HandleFunc("/relate/2", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		_, have := m["vid1"]
 		if !have {
@@ -144,12 +157,16 @@ func main() {
 		case http.MethodPost:
 			relate, _ := strconv.Atoi(m["relate"][0])
 			UserArray.SetRelate(uint(vid1), uint(vid2), relate)
+			w.Write([]byte("ok"))
 		case http.MethodDelete:
 			UserArray.Disfriend(uint(vid1), uint(vid2))
+			w.Write([]byte("ok"))
 		}
 	})
 
 	http.HandleFunc("/relate/n", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
+
 		bs, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -165,9 +182,11 @@ func main() {
 			for _, v := range relates {
 				UserArray.SetRelate(v.Vid1, v.Vid2, v.Relate)
 			}
+			w.Write([]byte("ok"))
 		}
 	})
 	http.HandleFunc("/common/2/likes", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		bs, _ := ioutil.ReadAll(r.Body)
 		user_user := []uint{}
 		json.Unmarshal(bs, &user_user)
@@ -180,6 +199,7 @@ func main() {
 		}
 	})
 	http.HandleFunc("/common/2/fans", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		bs, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -196,6 +216,7 @@ func main() {
 	})
 
 	http.HandleFunc("/common/n/likes", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		bs, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -212,12 +233,12 @@ func main() {
 
 		switch r.Method {
 		case http.MethodOptions:
-
 			bs, _ := json.Marshal(graphdb.Filter_min(UserArray.GetThemCommonLikes(users...), min))
 			w.Write(bs)
 		}
 	})
 	http.HandleFunc("/common/n/fans", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		bs, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.Write([]byte(err.Error()))
@@ -231,7 +252,6 @@ func main() {
 		if have {
 			min, _ = strconv.Atoi(m["min"][0])
 		}
-
 		switch r.Method {
 		case http.MethodOptions:
 			bs, _ := json.Marshal(graphdb.Filter_min(UserArray.GetThemCommonFans(users...), min))
@@ -239,7 +259,8 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/relate/count", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/count/relate", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 		switch r.Method {
 		case http.MethodGet:
 			bs, _ := json.Marshal(UserArray.GetUserRelateCount())
@@ -247,7 +268,8 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/user/count", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/count/user", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
 
 		switch r.Method {
 		case http.MethodGet:
@@ -256,6 +278,23 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/count/like", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
+
+		switch r.Method {
+		case http.MethodGet:
+			bs, _ := json.Marshal(UserArray.GetLikeCountCount())
+			w.Write(bs)
+		}
+	})
+	http.HandleFunc("/count/fans", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
+		switch r.Method {
+		case http.MethodGet:
+			bs, _ := json.Marshal(UserArray.GetFanCountCount())
+			w.Write(bs)
+		}
+	})
 	fmt.Println("start http server")
 	err := http.ListenAndServe(":8010", nil)
 	if err != nil {

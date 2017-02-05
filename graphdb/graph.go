@@ -18,12 +18,19 @@ func (this RelateGraph) GetUserRelateCount() int {
 	return relatecount
 }
 func (this RelateGraph) GetUserUserCount() int {
-	relatecount := 0
-	for range this.Users {
-		relatecount++
-	}
-	return relatecount
+	return len(this.Users)
 }
-func (this RelateGraph) SearchUserWhereInfo(key string, value interface{}) {
-
+func (this RelateGraph) GetLikeCountCount() map[int]int {
+	likesmap := make(map[int]int, 0)
+	for _, v := range this.Users {
+		likesmap[len(v.Likes)]++
+	}
+	return likesmap
+}
+func (this RelateGraph) GetFanCountCount() map[int]int {
+	likesmap := make(map[int]int, 0)
+	for _, v := range this.Users {
+		likesmap[len(v.Fans)]++
+	}
+	return likesmap
 }
