@@ -2,31 +2,50 @@ package graphdb
 
 // 关注他
 func (UserArray RelateGraph) Like(vid, beliked uint) {
-	UserArray.GetOrCreateUser(vid).Likes[beliked] = 0
+	UserArray.GetOrCreateUser(vid).Lock_likes.Lock()
+	UserArray.GetOrCreateUser(vid).Likes[beliked] = true
+	UserArray.GetOrCreateUser(vid).Lock_likes.Unlock()
 
-	UserArray.GetOrCreateUser(beliked).Fans[vid] = 0
+	UserArray.GetOrCreateUser(beliked).Lock_fans.Lock()
+	UserArray.GetOrCreateUser(beliked).Fans[vid] = true
+	UserArray.GetOrCreateUser(beliked).Lock_fans.Unlock()
 }
 
 // 取消关注他
 func (UserArray RelateGraph) DisLike(vid, beliked uint) {
+	UserArray.GetOrCreateUser(vid).Lock_likes.Lock()
 	delete(UserArray.GetOrCreateUser(vid).Likes, beliked)
+	UserArray.GetOrCreateUser(vid).Lock_likes.Unlock()
+
+	UserArray.GetOrCreateUser(beliked).Lock_fans.Lock()
 	delete(UserArray.GetOrCreateUser(beliked).Fans, vid)
+	UserArray.GetOrCreateUser(beliked).Lock_fans.Unlock()
 }
 
 // 互粉
 func (UserArray RelateGraph) Makefriend(vid, beliked uint) {
-	UserArray.GetOrCreateUser(vid).Likes[beliked] = 0
-	UserArray.GetOrCreateUser(beliked).Likes[vid] = 0
-	UserArray.GetOrCreateUser(beliked).Fans[vid] = 0
-	UserArray.GetOrCreateUser(vid).Fans[beliked] = 0
+	UserArray.GetOrCreateUser(vid).Lock_likes.Lock()
+	UserArray.GetOrCreateUser(beliked).Lock_fans.Lock()
+	UserArray.GetOrCreateUser(vid).Likes[beliked] = true
+	UserArray.GetOrCreateUser(beliked).Likes[vid] = true
+	UserArray.GetOrCreateUser(beliked).Fans[vid] = true
+	UserArray.GetOrCreateUser(vid).Fans[beliked] = true
+	UserArray.GetOrCreateUser(vid).Lock_likes.Unlock()
+	UserArray.GetOrCreateUser(beliked).Lock_fans.Unlock()
 }
 
 // 取消互粉
 func (UserArray RelateGraph) Disfriend(vid, beliked uint) {
+	UserArray.GetOrCreateUser(vid).Lock_likes.Lock()
+	UserArray.GetOrCreateUser(beliked).Lock_fans.Lock()
+
 	delete(UserArray.GetOrCreateUser(vid).Likes, beliked)
 	delete(UserArray.GetOrCreateUser(beliked).Likes, vid)
 	delete(UserArray.GetOrCreateUser(vid).Fans, beliked)
 	delete(UserArray.GetOrCreateUser(beliked).Fans, vid)
+
+	UserArray.GetOrCreateUser(vid).Lock_likes.Unlock()
+	UserArray.GetOrCreateUser(beliked).Lock_fans.Unlock()
 }
 
 // 2人的关系

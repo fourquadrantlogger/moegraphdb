@@ -2,16 +2,17 @@ package graphdb
 
 import (
 	"fmt"
+	"sync"
 )
 
 type (
 	User struct {
 		//Info map[string]interface{}
-		//Lock_fans  sync.RWMutex
-		//Lock_likes sync.RWMutex
-		Uid   uint
-		Fans  map[uint]byte
-		Likes map[uint]byte
+		Lock_fans  sync.RWMutex
+		Lock_likes sync.RWMutex
+		Uid        uint
+		Fans       map[uint]bool
+		Likes      map[uint]bool
 	}
 )
 
@@ -32,8 +33,8 @@ func (this *RelateGraph) GetOrCreateUser(vid uint) *User {
 
 func (this *RelateGraph) CreateUser(vid uint) {
 	this.Users[vid] = &User{Uid: vid,
-		Fans:  make(map[uint]byte, 0),
-		Likes: make(map[uint]byte, 0),
+		Fans:  make(map[uint]bool, 0),
+		Likes: make(map[uint]bool, 0),
 	}
 }
 

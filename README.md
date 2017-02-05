@@ -124,3 +124,8 @@ OPTIONS /common/n/fans
   "2": 4
 }
 ```
+## 从mysql导入数据流程
+
+step1:首先，使用[mydumper](https://github.com/maxbube/mydumper)将数据关系，从mysql中导出成文件格式
+
+step2:使用导入工具，graphdb-loader

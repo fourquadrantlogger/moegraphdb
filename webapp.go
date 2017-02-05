@@ -44,6 +44,23 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/like/n", func(w http.ResponseWriter, r *http.Request) {
+		bs, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
+		relates := []struct {
+			Vid1 uint `json:"vid1"`
+			Vid2 uint `json:"vid2"`
+		}{}
+		json.Unmarshal(bs, &relates)
+		switch r.Method {
+		case http.MethodPost:
+			for _, v := range relates {
+				UserArray.Like(v.Vid1, v.Vid2)
+			}
+		}
+	})
 	http.HandleFunc("/fans", func(w http.ResponseWriter, r *http.Request) {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		_, have := m["vid"]
@@ -74,6 +91,23 @@ func main() {
 
 	})
 
+	http.HandleFunc("/fans/n", func(w http.ResponseWriter, r *http.Request) {
+		bs, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
+		relates := []struct {
+			Vid1 uint `json:"vid1"`
+			Vid2 uint `json:"vid2"`
+		}{}
+		json.Unmarshal(bs, &relates)
+		switch r.Method {
+		case http.MethodPost:
+			for _, v := range relates {
+				UserArray.Like(v.Vid2, v.Vid1)
+			}
+		}
+	})
 	http.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		_, have := m["vid"]
