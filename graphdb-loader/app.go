@@ -2,28 +2,25 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
 	"strings"
-
-	"encoding/json"
 	"time"
 )
 
 func post(data string) {
-
 	url := "http://localhost:8010/relate/n"
 	payload := strings.NewReader(data)
-
 	req, _ := http.NewRequest("POST", url, payload)
-
 	res, _ := http.DefaultClient.Do(req)
-
 	defer res.Body.Close()
 }
 func main() {
+	var postdatalimit int = 1000000
+
 	db, err := sql.Open("mysql", "paidian:Paidian2016@tcp(rm-2ze076baorsp7ed0lo.mysql.rds.aliyuncs.com:3306)/crawler_meipai")
 	if err != nil {
 		log.Fatalf("Open database error: %s\n", err)
@@ -35,19 +32,19 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	var limit int = 1000000
-	for idstart := 0; ; idstart += limit {
-		rows, err := db.Query("select user_id,fans_id from meipai_rapport_t1 limit ? offset ?", limit, idstart)
-		if err != nil {
-			log.Println(err)
-		}
-		defer rows.Close()
+
+	for idstart := 0; ; idstart += postdatalimit {
 		relate := make([]struct {
 			Vid1   uint `json:"vid1"`
 			Vid2   uint `json:"vid2"`
 			Relate int  `json:"relate"`
-		}, limit)
+		}, postdatalimit)
 
+		rows, err := db.Query("select user_id,fans_id from meipai_rapport_t1 limit ? offset ?", postdatalimit, idstart)
+		if err != nil {
+			log.Println(err)
+		}
+		defer rows.Close()
 		i := 0
 		for rows.Next() {
 			var user_id, fans_id uint
