@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"github.com/timeloveboy/moegraphdb/graphdb"
 	"io/ioutil"
+	"strings"
 )
 
 var (
@@ -106,11 +107,35 @@ func main() {
 		if err != nil {
 			w.Write([]byte(err.Error()))
 		}
+
+		m, _ := url.ParseQuery(r.URL.RawQuery)
+		_, have := m["type"]
+		if !have {
+			return
+		}
 		relates := []struct {
 			Vid1 uint `json:"vid1"`
 			Vid2 uint `json:"vid2"`
 		}{}
-		json.Unmarshal(bs, &relates)
+		switch m["type"] {
+		case "json":
+			json.Unmarshal(bs, &relates)
+		case "row":
+			lines := strings.Split(string(bs), "/n")
+			for _, line := range lines {
+				user_fan := strings.Split(line, ",")
+				vid1, _ := strconv.Atoi(user_fan[0])
+				vid2, _ := strconv.Atoi(user_fan[1])
+				relates = append(relates, struct {
+					Vid1 uint `json:"vid1"`
+					Vid2 uint `json:"vid2"`
+				}{
+					Vid1: vid1,
+					Vid2: vid2,
+				})
+			}
+		}
+
 		switch r.Method {
 		case http.MethodPost:
 			for _, v := range relates {
