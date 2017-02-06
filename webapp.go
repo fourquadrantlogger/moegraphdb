@@ -12,6 +12,18 @@ import (
 	"strings"
 )
 
+type (
+	User_Fans struct {
+		Vid1 uint `json:"vid1"`
+		Vid2 uint `json:"vid2"`
+	}
+	User_Fans_Relate struct {
+		Vid1   uint `json:"vid1"`
+		Vid2   uint `json:"vid2"`
+		Relate int  `json:"relate"`
+	}
+)
+
 var (
 	UserArray graphdb.RelateGraph
 	OpenLog   bool = true
@@ -58,16 +70,32 @@ func main() {
 		if err != nil {
 			w.Write([]byte(err.Error()))
 		}
-		relates := []struct {
-			Vid1 uint `json:"vid1"`
-			Vid2 uint `json:"vid2"`
-		}{}
-		json.Unmarshal(bs, &relates)
+
+		m, _ := url.ParseQuery(r.URL.RawQuery)
+		_, have := m["type"]
+		if !have {
+			return
+		}
+		relates := make([]User_Fans, 0)
+		switch m["type"][0] {
+		case "json":
+			json.Unmarshal(bs, &relates)
+		case "row":
+			lines := strings.Split(string(bs), "\n")
+			for i, _ := range lines {
+				user_fan := strings.Split(lines[i], ",")
+				vid1, _ := strconv.Atoi(user_fan[0])
+				vid2, _ := strconv.Atoi(user_fan[1])
+				relates = append(relates, User_Fans{Vid1: uint(vid1), Vid2: uint(vid2)})
+			}
+		}
+
 		switch r.Method {
 		case http.MethodPost:
 			for _, v := range relates {
 				UserArray.Like(v.Vid1, v.Vid2)
 			}
+			w.Write([]byte("ok"))
 		}
 	})
 	http.HandleFunc("/fans", func(w http.ResponseWriter, r *http.Request) {
@@ -113,26 +141,17 @@ func main() {
 		if !have {
 			return
 		}
-		relates := []struct {
-			Vid1 uint `json:"vid1"`
-			Vid2 uint `json:"vid2"`
-		}{}
-		switch m["type"] {
+		relates := make([]User_Fans, 0)
+		switch m["type"][0] {
 		case "json":
 			json.Unmarshal(bs, &relates)
 		case "row":
-			lines := strings.Split(string(bs), "/n")
-			for _, line := range lines {
-				user_fan := strings.Split(line, ",")
+			lines := strings.Split(string(bs), "\n")
+			for i, _ := range lines {
+				user_fan := strings.Split(lines[i], ",")
 				vid1, _ := strconv.Atoi(user_fan[0])
 				vid2, _ := strconv.Atoi(user_fan[1])
-				relates = append(relates, struct {
-					Vid1 uint `json:"vid1"`
-					Vid2 uint `json:"vid2"`
-				}{
-					Vid1: vid1,
-					Vid2: vid2,
-				})
+				relates = append(relates, User_Fans{Vid1: uint(vid1), Vid2: uint(vid2)})
 			}
 		}
 
@@ -191,17 +210,33 @@ func main() {
 
 	http.HandleFunc("/relate/n", func(w http.ResponseWriter, r *http.Request) {
 		moeprint(r)
-
+		moeprint(r)
 		bs, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			w.Write([]byte(err.Error()))
 		}
-		relates := []struct {
-			Vid1   uint `json:"vid1"`
-			Vid2   uint `json:"vid2"`
-			Relate int  `json:"relate"`
-		}{}
-		json.Unmarshal(bs, &relates)
+
+		m, _ := url.ParseQuery(r.URL.RawQuery)
+		_, have := m["type"]
+		if !have {
+			return
+		}
+
+		relates := make([]User_Fans_Relate, 0)
+		switch m["type"][0] {
+		case "json":
+			json.Unmarshal(bs, &relates)
+		case "row":
+			lines := strings.Split(string(bs), "\n")
+			for i, _ := range lines {
+				user_fan := strings.Split(lines[i], ",")
+				vid1, _ := strconv.Atoi(user_fan[0])
+				vid2, _ := strconv.Atoi(user_fan[1])
+				relate, _ := strconv.Atoi(user_fan[2])
+				relates = append(relates, User_Fans_Relate{Vid1: uint(vid1), Vid2: uint(vid2), Relate: relate})
+			}
+		}
+
 		switch r.Method {
 		case http.MethodPost:
 			for _, v := range relates {

@@ -20,7 +20,7 @@ func (this *RelateGraph) GetUser(vid uint) *User {
 	if _, have := this.Users[vid]; have {
 		return (this.Users[vid])
 	}
-	panic(nil)
+	return nil
 }
 func (this *RelateGraph) GetOrCreateUser(vid uint) *User {
 	if _, have := this.Users[vid]; have {
@@ -40,8 +40,8 @@ func (this *RelateGraph) CreateUser(vid uint) {
 
 func (this *User) String() string {
 	//info, _ := json.Marshal(this.Info)
-	info := ""
-	return "{ Uid:" + fmt.Sprint(this.Uid) + ",Info:" + string(info) + ",FansCount:" + fmt.Sprint(this.FansCount()) + ",LikesCount:" + fmt.Sprint(this.LikesCount()) + ")"
+	//info := ""
+	return "{ \"Uid\":" + fmt.Sprint(this.Uid) + ",\"FansCount\":" + fmt.Sprint(this.FansCount()) + ",\"LikesCount\":" + fmt.Sprint(this.LikesCount()) + "}"
 }
 
 // 粉丝数
