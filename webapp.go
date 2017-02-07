@@ -46,7 +46,8 @@ func main() {
 		vid, _ := strconv.Atoi(m["vid"][0])
 		switch r.Method {
 		case http.MethodGet:
-			w.Write([]byte(fmt.Sprint(UserArray.Users[uint(vid)].Getlikes())))
+			bs, _ := json.Marshal(UserArray.Users[uint(vid)].Getlikes())
+			w.Write(bs)
 		case http.MethodPost:
 			_, have := m["beliked"]
 			if !have {
@@ -109,7 +110,8 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			{
-				w.Write([]byte(fmt.Sprint(UserArray.GetUser(uint(vid)).Getfans())))
+				bs, _ := json.Marshal(UserArray.GetUser(uint(vid)).Getfans())
+				w.Write(bs)
 			}
 		case http.MethodPost:
 			_, have := m["fan"]
@@ -293,7 +295,45 @@ func main() {
 
 		switch r.Method {
 		case http.MethodOptions:
-			bs, _ := json.Marshal(graphdb.Filter_min(UserArray.GetThemCommonLikes(users...), min))
+			bs, _ := json.Marshal(graphdb.Filtercount_min(UserArray.GetThemCommonLikes(users...), min))
+			w.Write(bs)
+		}
+	})
+
+	http.HandleFunc("/filter/n", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
+		bs, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			w.Write([]byte(err.Error()))
+		}
+		users := make([]uint, 0)
+		json.Unmarshal(bs, &users)
+
+		m, _ := url.ParseQuery(r.URL.RawQuery)
+		var filtertype string
+		_, have := m["type"]
+		if have {
+			filtertype = m["type"][0]
+		}
+		var max, min int
+		_, have = m["max"]
+		if have {
+			max, _ = strconv.Atoi(m["max"][0])
+		}
+		_, have = m["min"]
+		if have {
+			min, _ = strconv.Atoi(m["min"][0])
+		}
+		fmt.Println(users)
+		switch r.Method {
+		case http.MethodOptions:
+			bs := make([]byte, 0)
+			switch filtertype {
+			case "fanscount":
+				bs, _ = json.Marshal(UserArray.Filterusers_fanscount(users, max, min))
+			case "likescount":
+				bs, _ = json.Marshal(UserArray.Filterusers_likescount(users, max, min))
+			}
 			w.Write(bs)
 		}
 	})
@@ -314,7 +354,7 @@ func main() {
 		}
 		switch r.Method {
 		case http.MethodOptions:
-			bs, _ := json.Marshal(graphdb.Filter_min(UserArray.GetThemCommonFans(users...), min))
+			bs, _ := json.Marshal(graphdb.Filtercount_min(UserArray.GetThemCommonFans(users...), min))
 			w.Write(bs)
 		}
 	})
@@ -333,7 +373,7 @@ func main() {
 
 		switch r.Method {
 		case http.MethodGet:
-			bs, _ := json.Marshal(UserArray.GetUserRelateCount())
+			bs, _ := json.Marshal(UserArray.GetUserUserCount())
 			w.Write(bs)
 		}
 	})
