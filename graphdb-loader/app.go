@@ -58,6 +58,7 @@ func processLine(line []byte) {
 	l := string(line)
 	l = strings.Replace(l, "(", "", -1)
 	l = strings.Replace(l, ")", "", -1)
+	l = strings.Replace(l, ";", "", -1)
 	u_f := strings.Split(l, ",")
 
 	if len(u_f) >= 2 {
