@@ -24,7 +24,7 @@ func (this *User_Fans) String() string {
 }
 
 var (
-	folderpath                = *(flag.String("folder", "mydumperdata", "需要导入的数据文件夹所在路径"))
+	folderpath                = flag.String("folder", "mydumperdata", "需要导入的数据文件夹所在路径")
 	lines      chan User_Fans = make(chan User_Fans, 1000000)
 )
 
@@ -99,10 +99,10 @@ func ReadLine(filePth string, hookfn func([]byte)) error {
 }
 func main() {
 	flag.Parse()
-	fmt.Println("folderpath", folderpath)
+	fmt.Println("folderpath", *folderpath)
 	go posting()
 
-	err := filepath.Walk(folderpath, func(path string, f os.FileInfo, err error) error {
+	err := filepath.Walk(*folderpath, func(path string, f os.FileInfo, err error) error {
 		if f == nil {
 			return err
 		}
