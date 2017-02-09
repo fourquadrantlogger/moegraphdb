@@ -30,7 +30,7 @@ var (
 )
 
 func post(data string) {
-	url := "http://localhost:8010/like/n?type=row"
+	url := "http://localhost:8010/fans/n?type=row"
 	payload := strings.NewReader(data)
 	req, _ := http.NewRequest("POST", url, payload)
 	res, _ := http.DefaultClient.Do(req)
