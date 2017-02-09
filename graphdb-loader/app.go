@@ -57,18 +57,20 @@ func processLine(line []byte) {
 	l = strings.Replace(l, "(", "", -1)
 	l = strings.Replace(l, ")", "", -1)
 	l = strings.Replace(l, ";", "", -1)
+	l = strings.Replace(l, " ", "", -1)
+	l = strings.Replace(l, "\n", "", -1)
 	u_f := strings.Split(l, ",")
 
 	if len(u_f) >= 2 {
 		vid1, err := strconv.Atoi(u_f[0])
 		if err != nil {
-			fmt.Println(string(line))
+			fmt.Println(string(line), "u_f[0]", u_f[0])
 			return
 		}
 
 		vid2, err := strconv.Atoi(u_f[1])
 		if err != nil {
-			fmt.Println(string(line))
+			fmt.Println(string(line), "u_f[1]", u_f[1])
 			return
 		}
 		u := User_Fans{
