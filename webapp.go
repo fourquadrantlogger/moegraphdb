@@ -93,10 +93,12 @@ func main() {
 
 		switch r.Method {
 		case http.MethodPost:
+			i := 0
 			for _, v := range relates {
+				i++
 				UserArray.Like(v.Vid1, v.Vid2)
 			}
-			w.Write([]byte("ok"))
+			w.Write([]byte("import " + strconv.Itoa(i) + " like"))
 		}
 	})
 	http.HandleFunc("/fans", func(w http.ResponseWriter, r *http.Request) {

@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -29,10 +30,12 @@ var (
 )
 
 func post(data string) {
-	url := "http://localhost:8010/relate/n"
+	url := "http://localhost:8010/like/n?type=row"
 	payload := strings.NewReader(data)
 	req, _ := http.NewRequest("POST", url, payload)
 	res, _ := http.DefaultClient.Do(req)
+	bd, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(bd))
 	defer res.Body.Close()
 }
 func posting() {
@@ -115,5 +118,6 @@ func main() {
 	if err != nil {
 		fmt.Printf("filepath.Walk() returned %v\n", err)
 	}
-
+	for true {
+	}
 }
