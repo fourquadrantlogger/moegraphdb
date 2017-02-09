@@ -4,9 +4,12 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"bufio"
+	"flag"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -19,7 +22,8 @@ type (
 )
 
 var (
-	lines chan User_Fans = make(chan User_Fans, 1000000)
+	folderpath                = *(flag.String("folder", "需要导入的数据文件夹所在路径", "."))
+	lines      chan User_Fans = make(chan User_Fans, 1000000)
 )
 
 func post(data string) {
@@ -76,5 +80,19 @@ func ReadLine(filePth string, hookfn func([]byte)) error {
 }
 func main() {
 	go posting()
-	ReadLine("test.txt", processLine)
+
+	err := filepath.Walk(folderpath, func(path string, f os.FileInfo, err error) error {
+		if f == nil {
+			return err
+		}
+		if f.IsDir() {
+			return nil
+		}
+		ReadLine(path, processLine)
+		return nil
+	})
+	if err != nil {
+		fmt.Printf("filepath.Walk() returned %v\n", err)
+	}
+
 }

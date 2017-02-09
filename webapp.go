@@ -182,7 +182,7 @@ func main() {
 
 	})
 
-	http.HandleFunc("/relate/2", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/relate", func(w http.ResponseWriter, r *http.Request) {
 		moeprint(r)
 		m, _ := url.ParseQuery(r.URL.RawQuery)
 		_, have := m["vid1"]
