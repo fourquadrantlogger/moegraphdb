@@ -19,8 +19,12 @@ type (
 	}
 )
 
+func (this *User_Fans) String() string {
+	return strconv.Itoa(int(this.Vid1)) + "," + strconv.Itoa(int(this.Vid2))
+}
+
 var (
-	folderpath                = *(flag.String("folder", "需要导入的数据文件夹所在路径", "."))
+	folderpath                = *(flag.String("folder", ".", "需要导入的数据文件夹所在路径"))
 	lines      chan User_Fans = make(chan User_Fans, 1000000)
 )
 
@@ -36,7 +40,7 @@ func posting() {
 	datalist := make([]string, 0)
 	for true {
 		l := <-lines
-		datalist = append(datalist, l)
+		datalist = append(datalist, l.String())
 		i++
 		if i >= 10000 {
 			data := strings.Join(datalist, "\n")
@@ -49,13 +53,25 @@ func posting() {
 }
 func processLine(line []byte) {
 	u_f := strings.Split(string(line), ",")
-	vid1, _ := strconv.Atoi(u_f[0])
-	vid2, _ := strconv.Atoi(u_f[1])
-	u := User_Fans{
-		Vid1: vid1,
-		Vid2: vid2,
+	if len(u_f) == 2 {
+		vid1, err := strconv.Atoi(u_f[0])
+		if err != nil {
+			fmt.Println(string(line))
+			return
+		}
+
+		vid2, err := strconv.Atoi(u_f[1])
+		if err != nil {
+			fmt.Println(string(line))
+			return
+		}
+		u := User_Fans{
+			Vid1: uint(vid1),
+			Vid2: uint(vid2),
+		}
+		lines <- u
 	}
-	lines <- u
+
 }
 func ReadLine(filePth string, hookfn func([]byte)) error {
 	f, err := os.Open(filePth)
@@ -77,6 +93,8 @@ func ReadLine(filePth string, hookfn func([]byte)) error {
 	return nil
 }
 func main() {
+	flag.Parse()
+	fmt.Println("folderpath", folderpath)
 	go posting()
 
 	err := filepath.Walk(folderpath, func(path string, f os.FileInfo, err error) error {
