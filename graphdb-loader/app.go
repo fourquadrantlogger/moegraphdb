@@ -25,6 +25,7 @@ func (this *User_Fans) String() string {
 
 var (
 	folderpath                = flag.String("folder", "mydumperdata", "需要导入的数据文件夹所在路径")
+	chancount                 = flag.Int("c", 10000, "单次上传数据量")
 	lines      chan User_Fans = make(chan User_Fans, 1000000)
 )
 
@@ -61,7 +62,7 @@ func processLine(line []byte) {
 	l = strings.Replace(l, "\n", "", -1)
 	u_f := strings.Split(l, ",")
 
-	if len(u_f) >= 2 {
+	if len(u_f) >= *chancount {
 		vid1, err := strconv.Atoi(u_f[0])
 		if err != nil {
 			fmt.Println(string(line), "u_f[0]", u_f[0])
