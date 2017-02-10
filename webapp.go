@@ -297,7 +297,7 @@ func main() {
 
 		switch r.Method {
 		case http.MethodOptions:
-			bs, _ := json.Marshal(graphdb.Filtercount_min(UserArray.GetThemCommonLikes(users...), min))
+			bs, _ := json.Marshal(graphdb.Filtercount_min(UserArray.GetThemCommonLikes(users...), min, 1<<48))
 			w.Write(bs)
 		}
 	})
@@ -356,7 +356,7 @@ func main() {
 		}
 		switch r.Method {
 		case http.MethodOptions:
-			bs, _ := json.Marshal(graphdb.Filtercount_min(UserArray.GetThemCommonFans(users...), min))
+			bs, _ := json.Marshal(graphdb.Filtercount_min(UserArray.GetThemCommonFans(users...), min, 1<<48))
 			w.Write(bs)
 		}
 	})
@@ -394,6 +394,30 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			bs, _ := json.Marshal(UserArray.GetFanCountCount())
+			w.Write(bs)
+		}
+	})
+	http.HandleFunc("/computing/deadfans", func(w http.ResponseWriter, r *http.Request) {
+		moeprint(r)
+		m, _ := url.ParseQuery(r.URL.RawQuery)
+		var vid int
+		_, have := m["vid"]
+		if have {
+			vid, _ = strconv.Atoi(m["vid"][0])
+		} else {
+			w.Write([]byte("require vid"))
+		}
+		switch r.Method {
+		case http.MethodGet:
+			v := UserArray.GetUser(uint(vid))
+			if v == nil {
+				w.Write([]byte("no user " + strconv.Itoa(vid)))
+				return
+			}
+			vid_likes := v.Getlikes()
+			vid_likes_min1000000 := UserArray.Filterusers_fanscount(vid_likes, 1000000, 0)
+			count_count := UserArray.GetThemCommonFans(vid_likes_min1000000...)
+			bs, _ := json.Marshal(graphdb.Filtercount_min(count_count, 0, 1<<32))
 			w.Write(bs)
 		}
 	})

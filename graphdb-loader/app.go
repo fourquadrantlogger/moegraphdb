@@ -44,7 +44,7 @@ func posting() {
 		l := <-lines
 		datalist = append(datalist, l.String())
 		i++
-		if i >= 10000 {
+		if i >= 1 {
 			data := strings.Join(datalist, "\n")
 			post(data)
 			i = 0
