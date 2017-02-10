@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -34,8 +35,8 @@ func post(data string) {
 	payload := strings.NewReader(data)
 	req, _ := http.NewRequest("POST", url, payload)
 	res, _ := http.DefaultClient.Do(req)
-	//bd, _ := ioutil.ReadAll(res.Body)
-	//fmt.Println(string(bd))
+	bd, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(bd))
 	defer res.Body.Close()
 }
 func posting() {
