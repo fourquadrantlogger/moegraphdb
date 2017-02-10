@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/ioutil"
+//	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -35,11 +35,11 @@ func post(data string) {
 	url := "http://localhost:8010/fans/n?type=row"
 	payload := strings.NewReader(data)
 	req, _ := http.NewRequest("POST", url, payload)
-	res, err := http.DefaultClient.Do(req)
-	fmt.Println(err)
-	bd, err := ioutil.ReadAll(res.Body)
-	fmt.Println(err)
-	fmt.Println(string(bd))
+	res, _ := http.DefaultClient.Do(req)
+	//fmt.Println(err)
+	//bd, err := ioutil.ReadAll(res.Body)
+	//fmt.Println(err)
+	//fmt.Println(string(bd))
 	defer res.Body.Close()
 }
 func posting() {
@@ -47,7 +47,7 @@ func posting() {
 	datalist := make([]string, 0)
 	for true {
 		l := <-lines
-		fmt.Println("+")
+		//fmt.Println("+")
 		datalist = append(datalist, l.String())
 		i++
 		if i >= *chancount {
