@@ -61,7 +61,7 @@ func processLine(line []byte) {
 	l = strings.Replace(l, " ", "", -1)
 	l = strings.Replace(l, "\n", "", -1)
 	u_f := strings.Split(l, ",")
-
+	fmt.Println(*chancount)
 	if len(u_f) >= *chancount {
 		vid1, err := strconv.Atoi(u_f[0])
 		if err != nil {
