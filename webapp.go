@@ -407,6 +407,19 @@ func main() {
 		} else {
 			w.Write([]byte("require vid"))
 		}
+
+		var fansmax int = 1000000
+		_, have = m["fansmax"]
+		if have {
+			fansmax, _ = strconv.Atoi(m["fansmax"][0])
+		}
+
+		var existcount int = 10
+		_, have = m["existcount"]
+		if have {
+			existcount, _ = strconv.Atoi(m["existcount"][0])
+		}
+
 		switch r.Method {
 		case http.MethodGet:
 			v := UserArray.GetUser(uint(vid))
@@ -415,9 +428,9 @@ func main() {
 				return
 			}
 			vid_likes := v.Getlikes()
-			vid_likes_min1000000 := UserArray.Filterusers_fanscount(vid_likes, 1000000, 0)
+			vid_likes_min1000000 := UserArray.Filterusers_fanscount(vid_likes, fansmax, 0)
 			count_count := UserArray.GetThemCommonFans(vid_likes_min1000000...)
-			bs, _ := json.Marshal(graphdb.Filtercount_min(count_count, 0, 1<<32))
+			bs, _ := json.Marshal(graphdb.Filtercount_min(count_count, existcount, 1<<32))
 			w.Write(bs)
 		}
 	})
