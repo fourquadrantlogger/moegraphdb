@@ -35,8 +35,10 @@ func post(data string) {
 	url := "http://localhost:8010/fans/n?type=row"
 	payload := strings.NewReader(data)
 	req, _ := http.NewRequest("POST", url, payload)
-	res, _ := http.DefaultClient.Do(req)
-	bd, _ := ioutil.ReadAll(res.Body)
+	res, err := http.DefaultClient.Do(req)
+	fmt.Println(err)
+	bd, err := ioutil.ReadAll(res.Body)
+	fmt.Println(err)
 	fmt.Println(string(bd))
 	defer res.Body.Close()
 }
