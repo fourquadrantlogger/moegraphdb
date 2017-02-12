@@ -19,7 +19,8 @@ var Now_vid = 1
 var Size = 0
 var Ids []int
 var task chan uint = make(chan uint, 100000)
-var result chan map[uint]int = make(chan map[uint]int, 100)
+var result map[uint]map[uint]int = make(map[uint]map[uint]int, runtime.NumCPU())
+var result_chan uint = make(chan uint, runtime.NumCPU())
 var Maxfans, Mincount = 100 * 10000, 10
 var lock sync.RWMutex
 var Result map[uint]int = make(map[uint]int)
@@ -88,7 +89,9 @@ func re(workid int, this graphdb.RelateGraph) {
 		vid_likes_max1000000 := this.Filterusers_fanscount(vid_likes, Maxfans, 0)
 		count_count := this.GetThemCommonFans(vid_likes_max1000000...)
 		count_count_10 := graphdb.Filtercount_min(count_count, Mincount, 1<<32)
-		result <- count_count_10
+		result_chan <- vid
+		result[vid] = count_count_10
+
 		usingtime := time.Now().UnixNano() - starttime
 		if usingtime > 1000*1000 {
 			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + "len " + strconv.Itoa(len(count_count_10)) + " using milisecond" + fmt.Sprint(usingtime/1000000))
@@ -96,11 +99,12 @@ func re(workid int, this graphdb.RelateGraph) {
 	}
 }
 func ducer() {
-	c := <-result
+	c := <-result_chan
 	Now_vid++
 	lock.Lock()
-	for k, v := range c {
+	for k, v := range result[c] {
 		Result[k] += v
 	}
 	lock.Unlock()
+	delete(result, c)
 }
