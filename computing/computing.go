@@ -67,7 +67,7 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int, taskname
 			ducer()
 		}
 		os.MkdirAll("output", os.ModePerm)
-		ioutil.WriteFile("output/"+time.Now().String()[:19], JsonResult(), os.ModePerm)
+		ioutil.WriteFile("output/"+taskname, JsonResult(), os.ModePerm)
 		Start = false
 		Now_vid = 1
 		result = make(chan map[uint]int, 1000)
