@@ -27,7 +27,7 @@ func (this *User_Fans) String() string {
 var (
 	folderpath                = flag.String("f", "mydumperdata", "需要导入的数据文件夹所在路径")
 	chancount                 = flag.Int("c", 10000, "单次上传数据量")
-	lines      chan User_Fans = make(chan User_Fans, 1000000)
+	lines      chan User_Fans = make(chan User_Fans, 10000000)
 )
 
 func post(data string) {

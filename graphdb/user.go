@@ -2,6 +2,7 @@ package graphdb
 
 import (
 	"fmt"
+	"strconv"
 	"sync"
 )
 
@@ -17,24 +18,30 @@ type (
 )
 
 func (this *RelateGraph) GetUser(vid uint) *User {
-	if _, have := this.users[vid]; have {
-		return (this.users[vid])
+	if u, have := this.users.Get(vid); have {
+		return u
 	}
 	return nil
 }
 func (this *RelateGraph) GetOrCreateUser(vid uint) *User {
-	if _, have := this.users[vid]; have {
-		return (this.users[vid])
+	if u, have := this.users.Get(vid); have {
+		return u
 	} else {
+
 		this.CreateUser(vid)
 		return this.GetUser(vid)
 	}
 }
 
 func (this *RelateGraph) CreateUser(vid uint) {
-	this.users[vid] = &User{Uid: vid,
-		Fans:  make(map[uint]bool, 0),
-		Likes: make(map[uint]bool, 0),
+	if _, have := this.users.Get(vid); have {
+		panic("user exist" + strconv.Itoa(int(vid)))
+		return
+	} else {
+		this.users.Set(vid, &User{Uid: vid,
+			Fans:  make(map[uint]bool, 0),
+			Likes: make(map[uint]bool, 0),
+		})
 	}
 }
 

@@ -112,8 +112,14 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			{
-				bs, _ := json.Marshal(UserArray.GetUser(uint(vid)).Getfans())
-				w.Write(bs)
+				u := UserArray.GetUser(uint(vid))
+				if u != nil {
+					bs, _ := json.Marshal(u.Getfans())
+					w.Write(bs)
+				} else {
+					w.Write([]byte("no user " + strconv.Itoa(vid)))
+				}
+
 			}
 		case http.MethodPost:
 			_, have := m["fan"]
@@ -178,7 +184,13 @@ func main() {
 		switch r.Method {
 		case http.MethodGet:
 			{
-				w.Write([]byte(fmt.Sprint(UserArray.GetUser(uint(vid)))))
+				u := UserArray.GetUser(uint(vid))
+				if u != nil {
+					w.Write([]byte(fmt.Sprint(UserArray.GetUser(uint(vid)))))
+				} else {
+					w.Write([]byte("no user " + strconv.Itoa(vid)))
+				}
+
 			}
 		}
 
