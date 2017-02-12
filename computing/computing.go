@@ -14,6 +14,7 @@ import (
 var Start = false
 var Now_vid = 1
 var Size = 0
+var Ids []int
 var task chan uint = make(chan uint, 100000)
 var result chan map[uint]int = make(chan map[uint]int, 10000)
 var Maxfans, Mincount = 100 * 10000, 10
@@ -27,7 +28,7 @@ func JsonResult() []byte {
 	return bs
 }
 
-func Mapper(this graphdb.RelateGraph, maxfans, mincount int) {
+func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int) {
 	Maxfans = maxfans
 	Mincount = mincount
 	fmt.Println("start mapping")
@@ -36,18 +37,26 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int) {
 		go re(i, this)
 	}
 
-	go func() {
-		ids := make([]int, 0)
+	if len(ids) == 0 {
+		Ids = make([]int, 0)
 		for v := range this.Users.IterItems() {
-			ids = append(ids, int(v.Key))
+			Ids = append(Ids, int(v.Key))
 		}
-		sort.Ints(ids)
-		fmt.Println("start jobber " + strconv.Itoa(len(ids)))
-		for _, id := range ids {
+
+	} else {
+		Ids = ids
+	}
+
+	sort.Ints(Ids)
+
+	fmt.Println("start jobber " + strconv.Itoa(len(Ids)))
+	go func() {
+		for _, id := range Ids {
 			task <- uint(id)
 		}
 		fmt.Println("end jobber")
 	}()
+
 	fmt.Println("start duce")
 	go func(size int) {
 		for d := 0; d < size; d++ {
@@ -59,23 +68,25 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int) {
 		Result = make(map[uint]int)
 		fmt.Println("end duce")
 		fmt.Println(Result)
-	}(Size)
+	}(len(Ids))
 }
 func re(workid int, this graphdb.RelateGraph) {
 	for true {
 		vid := <-task
 		starttime := time.Now().UnixNano()
 		u := this.GetUser(vid)
-		vid_likes := u.Getlikes()
+		vid_likes := make([]uint, 0)
+		if u != nil {
+			vid_likes = u.Getlikes()
+		}
 		vid_likes_max1000000 := this.Filterusers_fanscount(vid_likes, Maxfans, 0)
 		count_count := this.GetThemCommonFans(vid_likes_max1000000...)
 		count_count_10 := graphdb.Filtercount_min(count_count, Mincount, 1<<32)
 		result <- count_count_10
 		usingtime := time.Now().UnixNano() - starttime
-		if usingtime > 10000 {
-			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + " using milisecond" + fmt.Sprint(usingtime/1000))
+		if usingtime > 1000*1000 {
+			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + " using milisecond" + fmt.Sprint(usingtime/1000000))
 		}
-
 	}
 }
 func ducer() {

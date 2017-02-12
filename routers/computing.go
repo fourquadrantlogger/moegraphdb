@@ -63,10 +63,16 @@ func AutoComputing(w http.ResponseWriter, r *http.Request) {
 	if have {
 		existcount, _ = strconv.Atoi(m["existcount"][0])
 	}
+	ids := make([]int, 0)
+	switch r.Method {
+	case http.MethodPost:
+		bs, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(bs, &ids)
+	}
 
 	if computing.Start == false {
 		computing.Start = true
-		go computing.Mapper(UserArray, fansmax, existcount)
+		go computing.Mapper(UserArray, fansmax, existcount, ids)
 	}
 	ioutil.WriteFile("result.file", computing.JsonResult(), os.ModePerm)
 	w.Write([]byte("now_vid:" + strconv.Itoa(computing.Now_vid)))
