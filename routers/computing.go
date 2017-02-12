@@ -49,9 +49,22 @@ func Handle_computing_deadfans(w http.ResponseWriter, r *http.Request) {
 
 func AutoComputing(w http.ResponseWriter, r *http.Request) {
 	moeprint(r)
+	m, _ := url.ParseQuery(r.URL.RawQuery)
+	var fansmax int = 1000000
+	_, have := m["fansmax"]
+	if have {
+		fansmax, _ = strconv.Atoi(m["fansmax"][0])
+	}
+
+	var existcount int = 10
+	_, have = m["existcount"]
+	if have {
+		existcount, _ = strconv.Atoi(m["existcount"][0])
+	}
+
 	if computing.Start == false {
 		computing.Start = true
-		go computing.Mapper(UserArray)
+		go computing.Mapper(UserArray, fansmax, existcount)
 	}
 	w.Write([]byte("now_vid:" + strconv.Itoa(computing.Now_vid) + "\n" + computing.JsonResult()))
 }
