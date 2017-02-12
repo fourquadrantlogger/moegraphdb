@@ -91,7 +91,7 @@ func re(workid int, this graphdb.RelateGraph) {
 		result <- count_count_10
 		usingtime := time.Now().UnixNano() - starttime
 		if usingtime > 1000*1000 {
-			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + " using milisecond" + fmt.Sprint(usingtime/1000000))
+			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + "len " + strconv.Itoa(len(count_count_10)) + " using milisecond" + fmt.Sprint(usingtime/1000000))
 		}
 	}
 }
