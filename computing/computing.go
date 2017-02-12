@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/timeloveboy/moegraphdb/graphdb"
+	"io/ioutil"
+	"os"
 	"runtime"
 	"sort"
 	"strconv"
@@ -62,12 +64,13 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int) {
 		for d := 0; d < size; d++ {
 			ducer()
 		}
+		ioutil.WriteFile("result.file", JsonResult(), os.ModePerm)
 		Start = false
 		Now_vid = 1
 		result = make(chan map[uint]int, 1000)
 		Result = make(map[uint]int)
 		fmt.Println("end duce")
-		fmt.Println(Result)
+
 	}(len(Ids))
 }
 func re(workid int, this graphdb.RelateGraph) {
