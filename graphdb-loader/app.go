@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-//	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -26,7 +25,7 @@ func (this *User_Fans) String() string {
 }
 
 var (
-	folderpath                = flag.String("folder", "mydumperdata", "需要导入的数据文件夹所在路径")
+	folderpath                = flag.String("f", "mydumperdata", "需要导入的数据文件夹所在路径")
 	chancount                 = flag.Int("c", 10000, "单次上传数据量")
 	lines      chan User_Fans = make(chan User_Fans, 1000000)
 )
@@ -57,6 +56,28 @@ func posting() {
 			datalist = make([]string, 0)
 		}
 	}
+}
+func post_lasted() {
+	i := 0
+	datalist := make([]string, 0)
+	for true {
+		over := false
+		select {
+		case l := <-lines:
+			datalist = append(datalist, l.String())
+			i++
+		case <-time.After(time.Second * 10):
+			over = true
+		}
+		over = true
+		if over == true {
+			break
+		}
+	}
+	//fmt.Println("+")
+	data := strings.Join(datalist, "\n")
+	post(data)
+
 }
 func processLine(line []byte) {
 	l := string(line)
@@ -124,5 +145,7 @@ func main() {
 	if err != nil {
 		fmt.Printf("filepath.Walk() returned %v\n", err)
 	}
-	time.Sleep(time.Second * 10)
+	post_lasted()
+	fmt.Println("3 second to end ...")
+	time.Sleep(time.Second * 3)
 }
