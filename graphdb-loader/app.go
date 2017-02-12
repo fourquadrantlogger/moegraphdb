@@ -39,7 +39,12 @@ func post(data string) {
 	//bd, err := ioutil.ReadAll(res.Body)
 	//fmt.Println(err)
 	//fmt.Println(string(bd))
-	defer res.Body.Close()
+	if res == nil {
+		fmt.Println("server no ok")
+	} else {
+		res.Body.Close()
+	}
+
 }
 func posting() {
 	i := 0
