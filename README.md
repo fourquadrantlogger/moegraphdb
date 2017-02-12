@@ -29,6 +29,44 @@ POST /like?vid=1&beliked=2
 DELETE /like?vid=1&beliked=2
 
 >用户1取消关注了用户2
+### like/n
+
+POST /like?type=(row/json)
+> 批量输入用户关系
+
+row模式
+``` 
+1,2
+3,4
+5,2
+...
+
+```
+json模式
+``` 
+[
+{
+	"vid1":1,
+	"vid2":2,
+},{
+	"vid1":1,
+	"vid2":3,
+},{
+	"vid1":1,
+	"vid2":4,
+},{
+	"vid1":1,
+	"vid2":5,
+},{
+	"vid1":1,
+	"vid2":6,
+}
+...
+]
+
+
+```
+
 
 
 
@@ -46,29 +84,18 @@ DELETE /like?vid=1&fan=2
 
 >用户1失去了粉丝用户2
 
+### fans/n
+
+如like/n
+
 ### user
 
 GET /user?vid=1
 
->用户1的更多key/value信息
+>用户1的信息
 
-POST /user?vid=1
-```
-{
- "key":"value"
-}
-```
->重新设置用户1的key/value信息
 
-DELETE /user?vid=1
-```
-{
- "key":"value"
-}
-```
->更新用户1的一部分key/value信息
-
-### relate/2
+### relate
 GET /relate/2?vid1=1&vid2=2
 
 >用户1与用户2的关系
@@ -83,19 +110,42 @@ DELETE /relate/2?vid=1&fan=2
 
 ### relate/n
 
-POST /relate/n
+POST /relate/n?type=(json/row)
 ```
 [
 {
 	"vid1":1,
 	"vid2":2,
 	"relate":3
+},
+{
+	"vid1":1,
+	"vid2":3,
+	"relate":2
 }
 ]
 ```
 >批量导入用户关系
+### common/2
 
-### common
+
+OPTIONS /common/2/likes
+
+[1,2]
+> 找到这2个人共同关注的人
+```
+[1,2,3,4,5,6,7]
+```
+
+OPTIONS /common/n/fans
+> 找到2个人共同的粉丝
+[1,2,3,4,5,6,7]
+
+```
+[1,2,3,4,5,6,7]
+```
+
+### common/n
 
 
 OPTIONS /common/n/likes

@@ -18,13 +18,13 @@ type (
 )
 
 func (this *RelateGraph) GetUser(vid uint) *User {
-	if u, have := this.users.Get(vid); have {
+	if u, have := this.Users.Get(vid); have {
 		return u
 	}
 	return nil
 }
 func (this *RelateGraph) GetOrCreateUser(vid uint) *User {
-	if u, have := this.users.Get(vid); have {
+	if u, have := this.Users.Get(vid); have {
 		return u
 	} else {
 
@@ -34,11 +34,11 @@ func (this *RelateGraph) GetOrCreateUser(vid uint) *User {
 }
 
 func (this *RelateGraph) CreateUser(vid uint) {
-	if _, have := this.users.Get(vid); have {
+	if _, have := this.Users.Get(vid); have {
 		panic("user exist" + strconv.Itoa(int(vid)))
 		return
 	} else {
-		this.users.Set(vid, &User{Uid: vid,
+		this.Users.Set(vid, &User{Uid: vid,
 			Fans:  make(map[uint]bool, 0),
 			Likes: make(map[uint]bool, 0),
 		})

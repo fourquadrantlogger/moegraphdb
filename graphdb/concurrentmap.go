@@ -24,13 +24,13 @@ type SyncMap struct {
 }
 
 // Create a new SyncMap with default shard count.
-func syncmapNew() *SyncMap {
-	return NewWithShard(defaultShardCount)
+func SyncmapNew() *SyncMap {
+	return SyncmapNewWithShard(defaultShardCount)
 }
 
 // Create a new SyncMap with given shard count.
 // NOTE: shard count must be power of 2, default shard count will be used otherwise.
-func NewWithShard(shardCount uint8) *SyncMap {
+func SyncmapNewWithShard(shardCount uint8) *SyncMap {
 	if !isPowerOfTwo(shardCount) {
 		shardCount = defaultShardCount
 	}

@@ -1,9 +1,9 @@
 package graphdb
 
 func NewDB() RelateGraph {
-	UserArray := syncmapNew()
+	UserArray := SyncmapNew()
 	return RelateGraph{
-		users:  *UserArray,
+		Users:  *UserArray,
 		Indexs: make(map[string]map[string]interface{}, 0),
 	}
 }
