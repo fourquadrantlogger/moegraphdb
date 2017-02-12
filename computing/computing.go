@@ -14,17 +14,17 @@ import (
 var Start = false
 var Now_vid = 1
 var Size = 0
-var task chan uint = make(chan uint, 10000)
-var result chan map[uint]int = make(chan map[uint]int, 1000)
+var task chan uint = make(chan uint, 100000)
+var result chan map[uint]int = make(chan map[uint]int, 10000)
 var Maxfans, Mincount = 100 * 10000, 10
 var lock sync.RWMutex
 var Result map[uint]int = make(map[uint]int)
 
-func JsonResult() string {
+func JsonResult() []byte {
 	lock.Lock()
 	bs, _ := json.Marshal(Result)
 	defer lock.Unlock()
-	return string(bs)
+	return bs
 }
 
 func Mapper(this graphdb.RelateGraph, maxfans, mincount int) {
@@ -64,22 +64,22 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int) {
 func re(workid int, this graphdb.RelateGraph) {
 	for true {
 		vid := <-task
-		fmt.Println("workid" + strconv.Itoa(workid) + " is doing " + strconv.Itoa(int(vid)))
-		starttime := time.Now().Unix()
+		starttime := time.Now().UnixNano()
 		u := this.GetUser(vid)
 		vid_likes := u.Getlikes()
 		vid_likes_max1000000 := this.Filterusers_fanscount(vid_likes, Maxfans, 0)
 		count_count := this.GetThemCommonFans(vid_likes_max1000000...)
 		count_count_10 := graphdb.Filtercount_min(count_count, Mincount, 1<<32)
-
 		result <- count_count_10
-		endtime := time.Now().Unix()
-		fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + "using time" + fmt.Sprint((endtime-starttime)/1000))
+		usingtime := time.Now().UnixNano() - starttime
+		if usingtime > 10000 {
+			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + " using milisecond" + fmt.Sprint(usingtime/1000))
+		}
+
 	}
 }
 func ducer() {
 	c := <-result
-	fmt.Println("result", c)
 	Now_vid++
 	lock.Lock()
 	for k, v := range c {

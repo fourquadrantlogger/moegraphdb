@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"github.com/timeloveboy/moegraphdb/computing"
 	"github.com/timeloveboy/moegraphdb/graphdb"
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 )
 
@@ -66,5 +68,6 @@ func AutoComputing(w http.ResponseWriter, r *http.Request) {
 		computing.Start = true
 		go computing.Mapper(UserArray, fansmax, existcount)
 	}
-	w.Write([]byte("now_vid:" + strconv.Itoa(computing.Now_vid) + "\n" + computing.JsonResult()))
+	ioutil.WriteFile("result.file", computing.JsonResult(), os.ModePerm)
+	w.Write([]byte("now_vid:" + strconv.Itoa(computing.Now_vid)))
 }
