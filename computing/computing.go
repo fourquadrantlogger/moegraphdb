@@ -13,6 +13,7 @@ import (
 	"time"
 )
 
+var Taskname = "result"
 var Start = false
 var Now_vid = 1
 var Size = 0
@@ -30,9 +31,10 @@ func JsonResult() []byte {
 	return bs
 }
 
-func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int) {
+func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int, taskname string) {
 	Maxfans = maxfans
 	Mincount = mincount
+	Taskname = taskname
 	fmt.Println("start mapping")
 	Size = this.Users.Size()
 	for i := 0; i < runtime.NumCPU(); i++ {
@@ -64,7 +66,8 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int) {
 		for d := 0; d < size; d++ {
 			ducer()
 		}
-		ioutil.WriteFile("result.file", JsonResult(), os.ModePerm)
+		os.MkdirAll("output", os.ModePerm)
+		ioutil.WriteFile("output/"+time.Now().String()[:19], JsonResult(), os.ModePerm)
 		Start = false
 		Now_vid = 1
 		result = make(chan map[uint]int, 1000)
