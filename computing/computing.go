@@ -20,7 +20,7 @@ var Size = 0
 var Ids []int
 var task chan uint = make(chan uint, 100000)
 var result map[uint]map[uint]int = make(map[uint]map[uint]int, runtime.NumCPU())
-var result_chan uint = make(chan uint, runtime.NumCPU())
+var result_chan chan uint = make(chan uint, runtime.NumCPU())
 var Maxfans, Mincount = 100 * 10000, 10
 var lock sync.RWMutex
 var Result map[uint]int = make(map[uint]int)
@@ -71,7 +71,7 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int, taskname
 		ioutil.WriteFile("output/"+taskname, JsonResult(), os.ModePerm)
 		Start = false
 		Now_vid = 1
-		result = make(chan map[uint]int, 1000)
+		result = make(map[uint]map[uint]int, 1000)
 		Result = make(map[uint]int)
 		fmt.Println("end duce")
 
