@@ -73,7 +73,6 @@ func AutoComputing(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		bs, _ := ioutil.ReadAll(r.Body)
 		json.Unmarshal(bs, &ids)
-
 		if computing.Start == false {
 			computing.Start = true
 			go computing.Mapper(UserArray, fansmax, existcount, ids, taskname)
