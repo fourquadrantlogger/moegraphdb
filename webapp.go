@@ -46,7 +46,7 @@ func main() {
 		vid, _ := strconv.Atoi(m["vid"][0])
 		switch r.Method {
 		case http.MethodGet:
-			bs, _ := json.Marshal(UserArray.Users[uint(vid)].Getlikes())
+			bs, _ := json.Marshal(UserArray.GetUser(uint(vid)).Getlikes())
 			w.Write(bs)
 		case http.MethodPost:
 			_, have := m["beliked"]

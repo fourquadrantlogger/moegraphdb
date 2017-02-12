@@ -17,14 +17,14 @@ type (
 )
 
 func (this *RelateGraph) GetUser(vid uint) *User {
-	if _, have := this.Users[vid]; have {
-		return (this.Users[vid])
+	if _, have := this.users[vid]; have {
+		return (this.users[vid])
 	}
 	return nil
 }
 func (this *RelateGraph) GetOrCreateUser(vid uint) *User {
-	if _, have := this.Users[vid]; have {
-		return (this.Users[vid])
+	if _, have := this.users[vid]; have {
+		return (this.users[vid])
 	} else {
 		this.CreateUser(vid)
 		return this.GetUser(vid)
@@ -32,7 +32,7 @@ func (this *RelateGraph) GetOrCreateUser(vid uint) *User {
 }
 
 func (this *RelateGraph) CreateUser(vid uint) {
-	this.Users[vid] = &User{Uid: vid,
+	this.users[vid] = &User{Uid: vid,
 		Fans:  make(map[uint]bool, 0),
 		Likes: make(map[uint]bool, 0),
 	}
