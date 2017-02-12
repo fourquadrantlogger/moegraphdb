@@ -19,7 +19,7 @@ var Now_vid = 1
 var Size = 0
 var Ids []int
 var task chan uint = make(chan uint, 100000)
-var result chan map[uint]int = make(chan map[uint]int, 300)
+var result chan map[uint]int = make(chan map[uint]int, 100)
 var Maxfans, Mincount = 100 * 10000, 10
 var lock sync.RWMutex
 var Result map[uint]int = make(map[uint]int)
