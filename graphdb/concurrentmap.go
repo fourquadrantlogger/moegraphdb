@@ -170,18 +170,6 @@ func (m *SyncMap) IterItems() <-chan Item {
 	return ch
 }
 
-const seed uint32 = 131 // 31 131 1313 13131 131313 etc..
-
-func bkdrHash(str string) uint32 {
-	var h uint32
-
-	for _, c := range str {
-		h = h*seed + uint32(c)
-	}
-
-	return h
-}
-
 func isPowerOfTwo(x uint8) bool {
 	return x != 0 && (x&(x-1) == 0)
 }
