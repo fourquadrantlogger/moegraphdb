@@ -66,7 +66,7 @@ func AutoComputing(w http.ResponseWriter, r *http.Request) {
 	var taskname string = "result"
 	_, have = m["taskname"]
 	if have {
-		taskname = m["existcount"][0]
+		taskname = m["taskname"][0]
 	}
 	ids := make([]int, 0)
 	switch r.Method {
