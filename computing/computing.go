@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"sort"
 	"strconv"
 	"sync"
@@ -22,7 +23,7 @@ var task chan uint = make(chan uint, 100000)
 var result map[uint]map[uint]int = make(map[uint]map[uint]int, runtime.NumCPU())
 var result_chan chan uint = make(chan uint, runtime.NumCPU())
 var Maxfans, Mincount = 100 * 10000, 10
-var lock sync.RWMutex
+
 var Result map[uint]int = make(map[uint]int)
 
 func JsonResult() []byte {
@@ -91,7 +92,7 @@ func re(workid int, this graphdb.RelateGraph) {
 		count_count_10 := graphdb.Filtercount_min(count_count, Mincount, 1<<32)
 		result_chan <- vid
 		result[vid] = count_count_10
-
+		debug.FreeOSMemory()
 		usingtime := time.Now().UnixNano() - starttime
 		if usingtime > 1000*1000 {
 			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + "len " + strconv.Itoa(len(count_count_10)) + "all len" + strconv.Itoa(len(result)) + " using milisecond" + fmt.Sprint(usingtime/1000000))
@@ -101,10 +102,8 @@ func re(workid int, this graphdb.RelateGraph) {
 func ducer() {
 	c := <-result_chan
 	Now_vid++
-	lock.Lock()
 	for k, v := range result[c] {
 		Result[k] += v
 	}
-	lock.Unlock()
 	delete(result, c)
 }
