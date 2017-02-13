@@ -16,7 +16,6 @@ import (
 
 var Start = false
 var Now_vid = 1
-var Size = 0
 var Ids []int
 var task chan uint = make(chan uint, 100000)
 var result chan map[uint]int = make(chan map[uint]int)
@@ -29,23 +28,23 @@ func JsonResult() []byte {
 	return bs
 }
 
-func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int, taskname string) {
+func Mapper(this graphdb.RelateGraph, maxfans, mincount int, myids []int, taskname string) {
 	Maxfans = maxfans
 	Mincount = mincount
 	fmt.Println("start mapping")
-	Size = this.Users.Size()
+
 	for i := 0; i < runtime.NumCPU(); i++ {
 		go re(i, this)
 	}
 
-	if len(ids) == 0 {
+	if len(myids) == 0 {
 		Ids = make([]int, 0)
 		for v := range this.Users.IterItems() {
 			Ids = append(Ids, int(v.Key))
 		}
 
 	} else {
-		Ids = ids
+		Ids = myids
 	}
 
 	sort.Ints(Ids)
@@ -75,7 +74,7 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int, taskname
 
 	go func() {
 		for {
-			time.Sleep(time.Minute)
+			time.Sleep(time.Second * 30)
 			debug.FreeOSMemory()
 		}
 
