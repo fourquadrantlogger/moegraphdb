@@ -2,9 +2,9 @@ package graphdb
 
 // 粉丝
 func (this User) Getfans() []uint {
-	result := make([]uint, len(this.Fans))
+	result := make([]uint, this.Fans.Size())
 	i := 0
-	for k, _ := range this.Fans {
+	for k := range this.Fans.IterKeys() {
 		result[i] = k
 		i++
 	}

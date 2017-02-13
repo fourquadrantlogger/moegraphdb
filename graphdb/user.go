@@ -3,17 +3,14 @@ package graphdb
 import (
 	"fmt"
 	"strconv"
-	"sync"
 )
 
 type (
 	User struct {
 		//Info map[string]interface{}
-		Lock_fans  sync.RWMutex
-		Lock_likes sync.RWMutex
-		Uid        uint
-		Fans       map[uint]bool
-		Likes      map[uint]bool
+		Uid   uint
+		Fans  *SafeMap
+		Likes *SafeMap
 	}
 )
 
@@ -39,8 +36,8 @@ func (this *RelateGraph) CreateUser(vid uint) {
 		return
 	} else {
 		this.Users.Set(vid, &User{Uid: vid,
-			Fans:  make(map[uint]bool, 0),
-			Likes: make(map[uint]bool, 0),
+			Fans:  SafemapNewWithShard(1),
+			Likes: SafemapNewWithShard(1),
 		})
 	}
 }
@@ -54,7 +51,7 @@ func (this *User) String() string {
 // 粉丝数
 func (this *User) FansCount() int {
 	if this != nil && this.Fans != nil {
-		return len(this.Fans)
+		return this.Fans.Size()
 	}
 	return 0
 }
@@ -62,7 +59,7 @@ func (this *User) FansCount() int {
 // 关注数
 func (this *User) LikesCount() int {
 	if this != nil && this.Likes != nil {
-		return len(this.Likes)
+		return this.Likes.Size()
 	}
 	return 0
 }

@@ -2,9 +2,9 @@ package graphdb
 
 // 关注的人
 func (this User) Getlikes() []uint {
-	result := make([]uint, len(this.Likes))
+	result := make([]uint, this.Likes.Size())
 	i := 0
-	for k, _ := range this.Likes {
+	for k := range this.Likes.IterKeys() {
 		result[i] = k
 		i++
 	}

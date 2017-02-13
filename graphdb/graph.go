@@ -13,7 +13,7 @@ func (this *RelateGraph) InitIndex() {
 func (this RelateGraph) GetUserRelateCount() int {
 	relatecount := 0
 	for v := range this.Users.IterItems() {
-		relatecount += len(v.Value.Likes)
+		relatecount += v.Value.Likes.Size()
 	}
 	return relatecount
 }
@@ -23,7 +23,7 @@ func (this RelateGraph) GetUserUserCount() int {
 func (this RelateGraph) GetLikeCountCount() map[int]int {
 	likesmap := make(map[int]int, 0)
 	for v := range this.Users.IterItems() {
-		likesmap[len(v.Value.Likes)]++
+		likesmap[v.Value.Likes.Size()]++
 	}
 
 	return likesmap
@@ -31,7 +31,7 @@ func (this RelateGraph) GetLikeCountCount() map[int]int {
 func (this RelateGraph) GetFanCountCount() map[int]int {
 	likesmap := make(map[int]int, 0)
 	for v := range this.Users.IterItems() {
-		likesmap[len(v.Value.Fans)]++
+		likesmap[v.Value.Fans.Size()]++
 	}
 	return likesmap
 }
