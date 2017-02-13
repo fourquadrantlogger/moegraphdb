@@ -72,6 +72,14 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int, taskname
 		fmt.Println("end duce")
 
 	}(len(Ids))
+
+	go func() {
+		for {
+			time.Sleep(time.Minute)
+			debug.FreeOSMemory()
+		}
+
+	}()
 }
 func re(workid int, this graphdb.RelateGraph) {
 	for true {
@@ -87,7 +95,7 @@ func re(workid int, this graphdb.RelateGraph) {
 		count_count_10 := graphdb.Filtercount_min(count_count, Mincount, 1<<32)
 
 		result <- count_count_10
-		debug.FreeOSMemory()
+
 		usingtime := time.Now().UnixNano() - starttime
 		if usingtime > 1000*1000 {
 			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + "len " + strconv.Itoa(len(count_count_10)) + "all len" + strconv.Itoa(len(result)) + " using milisecond" + fmt.Sprint(usingtime/1000000))
