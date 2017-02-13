@@ -14,7 +14,6 @@ import (
 	"time"
 )
 
-var Taskname = "result"
 var Start = false
 var Now_vid = 1
 var Size = 0
@@ -27,16 +26,13 @@ var Maxfans, Mincount = 100 * 10000, 10
 var Result map[uint]int = make(map[uint]int)
 
 func JsonResult() []byte {
-	lock.Lock()
 	bs, _ := json.Marshal(Result)
-	defer lock.Unlock()
 	return bs
 }
 
 func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int, taskname string) {
 	Maxfans = maxfans
 	Mincount = mincount
-	Taskname = taskname
 	fmt.Println("start mapping")
 	Size = this.Users.Size()
 	for i := 0; i < runtime.NumCPU(); i++ {
