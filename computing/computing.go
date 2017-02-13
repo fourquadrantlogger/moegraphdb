@@ -10,7 +10,7 @@ import (
 	"runtime/debug"
 	"sort"
 	"strconv"
-	"sync"
+
 	"time"
 )
 
@@ -67,7 +67,7 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, ids []int, taskname
 		ioutil.WriteFile("output/"+taskname, JsonResult(), os.ModePerm)
 		Start = false
 		Now_vid = 1
-		result = make(map[uint]map[uint]int, 1000)
+		result = make(chan map[uint]int)
 		Result = make(map[uint]int)
 		fmt.Println("end duce")
 
@@ -97,7 +97,7 @@ func re(workid int, this graphdb.RelateGraph) {
 func ducer() {
 	c := <-result
 	Now_vid++
-	for k, v := range result {
+	for k, v := range c {
 		Result[k] += v
 	}
 }
