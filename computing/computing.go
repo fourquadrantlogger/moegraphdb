@@ -19,8 +19,7 @@ var Now_vid = 1
 var Size = 0
 var Ids []int
 var task chan uint = make(chan uint, 100000)
-var result map[uint]map[uint]int = make(map[uint]map[uint]int, runtime.NumCPU())
-var result_chan chan uint = make(chan uint, runtime.NumCPU())
+var result chan map[uint]int = make(chan map[uint]int)
 var Maxfans, Mincount = 100 * 10000, 10
 
 var Result map[uint]int = make(map[uint]int)
@@ -86,8 +85,8 @@ func re(workid int, this graphdb.RelateGraph) {
 		vid_likes_max1000000 := this.Filterusers_fanscount(vid_likes, Maxfans, 0)
 		count_count := this.GetThemCommonFans(vid_likes_max1000000...)
 		count_count_10 := graphdb.Filtercount_min(count_count, Mincount, 1<<32)
-		result_chan <- vid
-		result[vid] = count_count_10
+
+		result <- count_count_10
 		debug.FreeOSMemory()
 		usingtime := time.Now().UnixNano() - starttime
 		if usingtime > 1000*1000 {
@@ -96,10 +95,9 @@ func re(workid int, this graphdb.RelateGraph) {
 	}
 }
 func ducer() {
-	c := <-result_chan
+	c := <-result
 	Now_vid++
-	for k, v := range result[c] {
+	for k, v := range result {
 		Result[k] += v
 	}
-	delete(result, c)
 }
