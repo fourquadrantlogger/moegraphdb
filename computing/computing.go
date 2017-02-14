@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strconv"
 
+	"sync"
 	"time"
 )
 
@@ -94,10 +95,15 @@ func re(workid int, this graphdb.RelateGraph) {
 		}
 	}
 }
+
+var Lock sync.RWMutex
+
 func ducer() {
 	c := <-result
 	Now_vid++
+	Lock.Lock()
 	for k, v := range c {
 		Result[k] += v
 	}
+	Lock.Unlock()
 }

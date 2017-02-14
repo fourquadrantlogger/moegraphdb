@@ -79,5 +79,11 @@ func AutoComputing(w http.ResponseWriter, r *http.Request) {
 		}
 	case http.MethodGet:
 		w.Write([]byte("now_vid:" + strconv.Itoa(computing.Now_vid)))
+
+	case http.MethodOptions:
+		computing.Lock.Lock()
+		bs, _ := json.Marshal(computing.Result)
+		computing.Lock.Unlock()
+		w.Write(bs)
 	}
 }
