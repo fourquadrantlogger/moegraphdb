@@ -33,7 +33,7 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, myids []int, taskna
 	Mincount = mincount
 	fmt.Println("start mapping")
 
-	for i := 0; i < runtime.NumCPU(); i++ {
+	for i := 0; i < 4*runtime.NumCPU(); i++ {
 		go re(i, this)
 	}
 
