@@ -60,7 +60,7 @@ func main() {
 
 			fmt.Println("Sys:", memstat.Sys/(1024*1024*1024), " HeapReleased:", memstat.HeapReleased)
 			time.Sleep(time.Second * 5)
-			if memstat.Sys/(1024*1024*1024) > *maxMem {
+			if memstat.Sys/(1024*1024*1024) > uint64(*maxMem) {
 				fmt.Println("timeloveboy forced gc")
 				debug.FreeOSMemory()
 			}
