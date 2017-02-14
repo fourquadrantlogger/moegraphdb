@@ -54,6 +54,7 @@ func main() {
 	serveMux.HandleFunc("/computing/autocomputing", routers.AutoComputing)
 
 	go func() {
+		fmt.Println("max mem:", *maxMem)
 		for {
 			var memstat runtime.MemStats
 			runtime.ReadMemStats(&memstat)
