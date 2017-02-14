@@ -1,5 +1,6 @@
 package main
 
+// 7:26开始
 import (
 	"bufio"
 	"flag"
