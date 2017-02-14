@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"runtime"
-	"runtime/debug"
+
 	"sort"
 	"strconv"
 
@@ -18,7 +18,7 @@ var Start = false
 var Now_vid = 1
 var Ids []int
 var task chan uint = make(chan uint, 100000)
-var result chan map[uint]int = make(chan map[uint]int)
+var result chan map[uint]int = make(chan map[uint]int, runtime.NumCPU())
 var Maxfans, Mincount = 100 * 10000, 10
 
 var Result map[uint]int = make(map[uint]int)
@@ -72,13 +72,6 @@ func Mapper(this graphdb.RelateGraph, maxfans, mincount int, myids []int, taskna
 
 	}(len(Ids))
 
-	go func() {
-		for {
-			time.Sleep(time.Second * 30)
-			debug.FreeOSMemory()
-		}
-
-	}()
 }
 func re(workid int, this graphdb.RelateGraph) {
 	for true {
@@ -96,7 +89,7 @@ func re(workid int, this graphdb.RelateGraph) {
 		result <- count_count_10
 
 		usingtime := time.Now().UnixNano() - starttime
-		if usingtime > 1000*1000 {
+		if usingtime > 1000*1000*100 {
 			fmt.Println("workid" + strconv.Itoa(workid) + " is complete " + strconv.Itoa(int(vid)) + "len " + strconv.Itoa(len(count_count_10)) + "all len" + strconv.Itoa(len(result)) + " using milisecond" + fmt.Sprint(usingtime/1000000))
 		}
 	}
