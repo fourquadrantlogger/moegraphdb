@@ -3,33 +3,33 @@ package graphdb
 // 关注他
 func (UserArray RelateGraph) Like(vid, beliked uint) {
 
-	UserArray.GetOrCreateUser(vid).Likes.Set(beliked, true)
-	UserArray.GetOrCreateUser(beliked).Fans.Set(vid, true)
+	UserArray.GetOrCreateUser(vid).Likes[beliked] = true
+	UserArray.GetOrCreateUser(beliked).Fans[vid] = true
 }
 
 // 取消关注他
 func (UserArray RelateGraph) DisLike(vid, beliked uint) {
 
-	UserArray.GetOrCreateUser(vid).Likes.Delete(beliked)
-	UserArray.GetOrCreateUser(beliked).Fans.Delete(vid)
+	delete(UserArray.GetOrCreateUser(vid).Likes, beliked)
+	delete(UserArray.GetOrCreateUser(beliked).Fans, vid)
 }
 
 // 互粉
 func (UserArray RelateGraph) Makefriend(vid, beliked uint) {
 
-	UserArray.GetOrCreateUser(vid).Likes.Set(beliked, true)
-	UserArray.GetOrCreateUser(beliked).Likes.Set(vid, true)
-	UserArray.GetOrCreateUser(beliked).Fans.Set(vid, true)
-	UserArray.GetOrCreateUser(vid).Fans.Set(beliked, true)
+	UserArray.GetOrCreateUser(vid).Likes[beliked] = true
+	UserArray.GetOrCreateUser(beliked).Likes[vid] = true
+	UserArray.GetOrCreateUser(beliked).Fans[vid] = true
+	UserArray.GetOrCreateUser(vid).Fans[beliked] = true
 }
 
 // 取消互粉
 func (UserArray RelateGraph) Disfriend(vid, beliked uint) {
 
-	UserArray.GetOrCreateUser(vid).Likes.Delete(beliked)
-	UserArray.GetOrCreateUser(beliked).Likes.Delete(vid)
-	UserArray.GetOrCreateUser(vid).Fans.Delete(beliked)
-	UserArray.GetOrCreateUser(beliked).Fans.Delete(vid)
+	delete(UserArray.GetOrCreateUser(vid).Likes, beliked)
+	delete(UserArray.GetOrCreateUser(beliked).Likes, vid)
+	delete(UserArray.GetOrCreateUser(vid).Fans, beliked)
+	delete(UserArray.GetOrCreateUser(beliked).Fans, vid)
 }
 
 // 2人的关系
@@ -39,11 +39,11 @@ func (UserArray RelateGraph) Disfriend(vid, beliked uint) {
 // 3：互粉的好友
 func (UserArray RelateGraph) GetRelate(vid1, vid2 uint) int {
 	relate := 0
-	has := UserArray.GetUser(vid1).Likes.Has(vid2)
+	has, _ := UserArray.GetUser(vid1).Likes[vid2]
 	if has {
 		relate += 1
 	}
-	has2 := UserArray.GetUser(vid1).Fans.Has(vid2)
+	has2, _ := UserArray.GetUser(vid1).Fans[vid2]
 	if has2 {
 		relate += 2
 	}

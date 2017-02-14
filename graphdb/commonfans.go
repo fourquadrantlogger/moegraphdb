@@ -3,8 +3,8 @@ package graphdb
 // 找到2个用户，共同的粉丝
 func (this RelateGraph) GetCommonFans(vid1, vid2 uint) []uint {
 	commonfans := make([]uint, 0)
-	for f := range this.GetUser(vid1).Fans.IterKeys() {
-		hav := this.GetUser(vid2).Fans.Has(f)
+	for f, _ := range this.GetUser(vid1).Fans {
+		hav, _ := this.GetUser(vid2).Fans[f]
 		if hav {
 			commonfans = append(commonfans, f)
 		}
@@ -17,7 +17,7 @@ func (this RelateGraph) GetCommonFans(vid1, vid2 uint) []uint {
 func (this RelateGraph) GetThemCommonFans(vids ...uint) map[uint]int {
 	likesmap := make(map[uint]int, 0)
 	for _, v := range vids {
-		for f := range this.GetUser(v).Fans.IterKeys() {
+		for f, _ := range this.GetUser(v).Fans {
 			likesmap[f]++
 		}
 	}

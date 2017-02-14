@@ -9,8 +9,8 @@ type (
 	User struct {
 		//Info map[string]interface{}
 		Uid   uint
-		Fans  *SafeMap
-		Likes *SafeMap
+		Fans  map[uint]bool
+		Likes map[uint]bool
 	}
 )
 
@@ -36,8 +36,8 @@ func (this *RelateGraph) CreateUser(vid uint) {
 		return
 	} else {
 		this.Users.Set(vid, &User{Uid: vid,
-			Fans:  SafemapNewWithShard(1),
-			Likes: SafemapNewWithShard(1),
+			Fans:  make(map[uint]bool, 1),
+			Likes: make(map[uint]bool, 1),
 		})
 	}
 }
@@ -51,7 +51,7 @@ func (this *User) String() string {
 // 粉丝数
 func (this *User) FansCount() int {
 	if this != nil && this.Fans != nil {
-		return this.Fans.Size()
+		return len(this.Fans)
 	}
 	return 0
 }
@@ -59,7 +59,7 @@ func (this *User) FansCount() int {
 // 关注数
 func (this *User) LikesCount() int {
 	if this != nil && this.Likes != nil {
-		return this.Likes.Size()
+		return len(this.Likes)
 	}
 	return 0
 }
