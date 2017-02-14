@@ -57,7 +57,8 @@ func posting() {
 		i++
 		if i >= *chancount {
 			data := strings.Join(datalist, "\n")
-			go post(data)
+			//go post(data)
+			post(data)
 			i = 0
 			datalist = make([]string, 0)
 		}
