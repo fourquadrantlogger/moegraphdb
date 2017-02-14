@@ -71,12 +71,13 @@ func AutoComputing(w http.ResponseWriter, r *http.Request) {
 	ids := make([]int, 0)
 	switch r.Method {
 	case http.MethodPost:
-		bs, _ := ioutil.ReadAll(r.Body)
-		json.Unmarshal(bs, &ids)
 		if computing.Start == false {
+			bs, _ := ioutil.ReadAll(r.Body)
+			json.Unmarshal(bs, &ids)
 			computing.Start = true
 			go computing.Mapper(UserArray, fansmax, existcount, ids, taskname)
 		}
+	case http.MethodGet:
+		w.Write([]byte("now_vid:" + strconv.Itoa(computing.Now_vid)))
 	}
-	w.Write([]byte("now_vid:" + strconv.Itoa(computing.Now_vid)))
 }
