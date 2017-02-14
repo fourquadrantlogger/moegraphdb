@@ -2,7 +2,7 @@ package graphdb
 
 type RelateGraph struct {
 	//用户
-	Users SyncMap
+	Users map[uint]bool
 	//info 的索引
 	Indexs map[string](map[string]interface{})
 }
@@ -12,7 +12,7 @@ func (this *RelateGraph) InitIndex() {
 }
 func (this RelateGraph) GetUserRelateCount() int {
 	relatecount := 0
-	for v := range this.Users.IterItems() {
+	for v := range this.Users {
 		relatecount += v.Value.Likes.Size()
 	}
 	return relatecount
