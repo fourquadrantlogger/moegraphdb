@@ -47,11 +47,14 @@ func post(data string) {
 	}
 
 }
+
+var over = false
+
 func posting() {
 	i := 0
 	datalist := make([]string, 0)
 	for true {
-		over := false
+
 		select {
 		case l := <-lines:
 			{
@@ -75,9 +78,7 @@ func posting() {
 				fmt.Println("posted all ok")
 			}
 		}
-		if over == true {
-			break
-		}
+
 	}
 }
 
@@ -148,5 +149,7 @@ func main() {
 		fmt.Printf("filepath.Walk() returned %v\n", err)
 	}
 	fmt.Println("all file read it")
-	time.Sleep(time.Second * 100)
+	for over == false {
+
+	}
 }
