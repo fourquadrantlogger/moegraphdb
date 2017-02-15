@@ -27,8 +27,8 @@ func (this *User_Fans) String() string {
 
 var (
 	folderpath                = flag.String("f", "mydumperdata", "需要导入的数据文件夹所在路径")
-	chancount                 = flag.Int("c", 1000000, "单次上传数据量")
-	lines      chan User_Fans = make(chan User_Fans, 100000000)
+	chancount                 = flag.Int("c", 1000000, "传数据量")
+	lines      chan User_Fans = make(chan User_Fans, 10000000)
 )
 
 func post(data string) {
@@ -51,41 +51,36 @@ func posting() {
 	i := 0
 	datalist := make([]string, 0)
 	for true {
-		l := <-lines
-		//fmt.Println("+")
-		datalist = append(datalist, l.String())
-		i++
-		if i >= *chancount {
-			data := strings.Join(datalist, "\n")
-			//go post(data)
-			post(data)
-			i = 0
-			datalist = make([]string, 0)
-		}
-	}
-}
-func post_lasted() {
-	i := 0
-	datalist := make([]string, 0)
-	for true {
 		over := false
 		select {
 		case l := <-lines:
-			datalist = append(datalist, l.String())
-			i++
-		case <-time.After(time.Second * 10):
-			over = true
+			{
+				//fmt.Println("+")
+				datalist = append(datalist, l.String())
+				i++
+				if i >= *chancount {
+					data := strings.Join(datalist, "\n")
+					//go post(data)
+					post(data)
+					i = 0
+					datalist = make([]string, 0)
+				}
+			}
+		case <-time.After(30 * time.Second):
+			{
+				data := strings.Join(datalist, "\n")
+				//go post(data)
+				post(data)
+				over = true
+				fmt.Println("posted all ok")
+			}
 		}
-		over = true
 		if over == true {
 			break
 		}
 	}
-	//fmt.Println("+")
-	data := strings.Join(datalist, "\n")
-	post(data)
-
 }
+
 func processLine(line []byte) {
 	l := string(line)
 	l = strings.Replace(l, "(", "", -1)
@@ -152,8 +147,6 @@ func main() {
 	if err != nil {
 		fmt.Printf("filepath.Walk() returned %v\n", err)
 	}
-	time.Sleep(time.Second * 30)
-	post_lasted()
-	fmt.Println("3 second to end ...")
-
+	fmt.Println("all file read it")
+	time.Sleep(time.Second * 100)
 }
