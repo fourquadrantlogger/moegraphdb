@@ -152,7 +152,8 @@ func main() {
 	if err != nil {
 		fmt.Printf("filepath.Walk() returned %v\n", err)
 	}
+	time.Sleep(time.Second * 30)
 	post_lasted()
 	fmt.Println("3 second to end ...")
-	time.Sleep(time.Second * 3)
+
 }
